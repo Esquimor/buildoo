@@ -1,5 +1,4 @@
 import './styles.css';
-import "@shared-ui/styles"
 
 export const metadata = {
   title: 'Welcome to web',

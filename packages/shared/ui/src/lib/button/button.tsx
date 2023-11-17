@@ -4,7 +4,7 @@ export interface ButtonProps {}
 export function Button(props: ButtonProps) {
   return (
     <div>
-      <h1 className="text-red-500">Welcome to Button!</h1>
+      <h1 className="text-red-600">Welcome to Button!</h1>
     </div>
   );
 }
