@@ -4,19 +4,58 @@
   "targetDefaults": {
     "build": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "lint": {
-      "cache": true
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.js"
+      ]
     },
     "test": {
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
     },
     "e2e": {
       "cache": true
+    },
+    "build-storybook": {
+      "cache": true
     }
   },
-  "nxCloudAccessToken": "OWM4NTAzZjUtOGNkZi00OTY1LWIxMzYtMGVkYWFjZDMyODkxfHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "OWM4NTAzZjUtOGNkZi00OTY1LWIxMzYtMGVkYWFjZDMyODkxfHJlYWQtd3JpdGU=",
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "style": "css",
+        "linter": "eslint",
+        "bundler": "vite",
+        "babel": true
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint",
+        "unitTestRunner": "vitest"
+      }
+    },
+    "@nx/next": {
+      "application": {
+        "style": "none",
+        "linter": "eslint"
+      }
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "options": {
+        "cacheableOperations": ["build-storybook"]
+      }
+    }
+  }
 }

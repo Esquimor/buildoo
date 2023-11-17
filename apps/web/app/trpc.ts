@@ -1,0 +1,11 @@
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { AppRouter } from '@server/app/trpc/trpc.router'
+
+export const trpc = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: "http://localhost:3000/trpc", // you should update this to use env variables
+    }),
+  ],
+});

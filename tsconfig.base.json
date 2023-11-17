@@ -1,0 +1,26 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared-ui": ["./packages/shared/ui/src/index.ts"],
+      "@shared-ui/styles": ["./packages/shared/ui/src/styles.css"],
+      "@tailwind-preset/*": ["./packages/tailwind-preset/*"],
+      "@shared-lang": ["./packages/shared/lang/src/index.ts"],
+      "@server/*": ["./apps/server/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
