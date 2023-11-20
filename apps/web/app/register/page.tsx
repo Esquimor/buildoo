@@ -1,16 +1,16 @@
+"use client"
 'use client'
 
-import { trpc } from "../../trpc";
+import { trpc } from "../trpc";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function Button() {
+export default function Register() {
     const router = useRouter();
   
-    const login =  trpc.auth.login.useMutation({
-      onSuccess(data) {
-        localStorage.setItem("token", data.token)
-        router.push("/");
+    const register =  trpc.auth.register.useMutation({
+      onSuccess() {
+        router.push("/login");
       },
       onError(err) {
         setErrorMsg(err.message);
@@ -28,8 +28,8 @@ export default function Button() {
         <button onClick={(event) => {
             event.preventDefault();
 
-            login.mutate({ email, password});
-          }}>Login</button>
+            register.mutate({ email, password});
+          }}>Register</button>
         {errorMsg}
 
         <br/>

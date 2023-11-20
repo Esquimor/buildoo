@@ -10,6 +10,6 @@ import { TrpcService } from '@server/app/trpc/trpc.service';
   imports: [TypeOrmModule.forFeature([User]), TrpcModule],
   controllers: [],
   providers: [UsersService, TrpcService, UsersRouter],
-  exports: [UsersRouter]
+  exports: [UsersService]
 })
 export class UsersModule {}

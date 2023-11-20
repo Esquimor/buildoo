@@ -6,9 +6,22 @@ export class User {
   id: number;
 
   @Column()
-  firstName: string;
+  email: string;
 
   @Column()
+  password: string;
+
+  @Column()
+  salt: string;
+
+  @Column({
+    nullable: true
+  })
+  firstName: string;
+
+  @Column({
+    nullable: true
+  })
   lastName: string;
 
   @Column({ default: true })

@@ -3,9 +3,9 @@
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCNext } from '@trpc/next';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { AppRouter } from '@server/app/trpc/trpc.router'
+import { AppRouterType } from '@server/app/app.router'
 
-export const trpc = createTRPCNext<AppRouter>({
+export const trpc = createTRPCNext<AppRouterType>({
   config(opts) {
     return {
       links: [
