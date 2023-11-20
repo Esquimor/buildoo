@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TRPCError, initTRPC } from '@trpc/server';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
 interface CreateInnerContextOptions extends CreateExpressContextOptions {
   user: {
@@ -39,6 +38,7 @@ export class TrpcService {
     }
     return next({
       ctx: {
+        ...ctx,
         user: {
           id: "1"
         },
@@ -47,6 +47,4 @@ export class TrpcService {
   });
 
   adminProcedure = this.trpc.procedure.use(this.isAdmin);
-   
-  //adminProcedure = this.trpc.procedure.use(this.isAdmin);
 }

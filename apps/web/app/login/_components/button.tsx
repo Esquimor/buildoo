@@ -8,7 +8,8 @@ export default function Button() {
     const router = useRouter();
   
     const login =  trpc.users.login.useMutation({
-      onSuccess() {
+      onSuccess(data) {
+        localStorage.setItem("token", data.token)
         router.push("/");
       },
       onError(err) {

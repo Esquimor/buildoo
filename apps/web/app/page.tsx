@@ -1,15 +1,19 @@
-"use client"
+"use client"        
 
 import { Button } from '@shared-ui';
 import { trpc } from "./trpc";
 
-export default async function Index() {
-  const greeting = await trpc.users.secretPlace.useQuery();
+export default function Index() {
+  const greeting = trpc.users.secretPlace.useQuery(undefined, {
+    onError(err) {
+      console.log(err)
+    }
+  });
 
   return (
     <div>
       <Button />
-      <span className="text-red-700">{greeting.data}</span>
+      {greeting.isSuccess && <span className="text-red-700">{greeting.data}</span>}
     </div>
   )
 }

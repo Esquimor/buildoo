@@ -11,8 +11,12 @@ export const trpc = createTRPCNext<AppRouter>({
       links: [
         httpBatchLink({
           url: "http://localhost:3000/trpc", // you should update this to use env variables
-          headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.K0OWH-3snu0W1C2mf6tJF5-zo6liDq_6tNdqL5dDOso"
+          async headers() {
+            const token = localStorage.getItem("token")
+
+            return {
+              Authorization: token ? `Bearer ${localStorage.getItem("token")}` : ""
+            }
           }
         }),
       ],
