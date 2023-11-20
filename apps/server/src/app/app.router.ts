@@ -1,11 +1,11 @@
 import { INestApplication, Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { TrpcService, createTRPCContext } from './trpc.service';
+import { TrpcService, createTRPCContext } from './trpc/trpc.service';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { UsersRouter } from '@server/app/trpc/users.router';
+import { UsersRouter } from '@server/users/users.router';
 
 @Injectable()
-export class TrpcRouter {
+export class AppRouter {
   constructor(
     private readonly trpc: TrpcService,
     private readonly usersRouter: UsersRouter,
@@ -38,4 +38,4 @@ export class TrpcRouter {
   }
 }
 
-export type AppRouter = TrpcRouter[`appRouter`];
+export type AppRouterType = AppRouter[`appRouter`];

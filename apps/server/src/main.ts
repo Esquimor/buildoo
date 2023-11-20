@@ -7,14 +7,14 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
-import { TrpcRouter } from './app/trpc/trpc.router';
+import { AppRouter } from './app/app.router';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const trpc = app.get(TrpcRouter);
+  const trpc = app.get(AppRouter);
   trpc.applyMiddleware(app);
   const port = process.env.PORT || 3000;
   await app.listen(port);
