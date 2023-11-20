@@ -1,11 +1,15 @@
 import { INestApplication, Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { TrpcService } from './trpc.service';
+import { TrpcService, createTRPCContext } from './trpc.service';
 import * as trpcExpress from '@trpc/server/adapters/express';
+import { UsersRouter } from '@server/app/trpc/users.router';
 
 @Injectable()
 export class TrpcRouter {
-  constructor(private readonly trpc: TrpcService) {}
+  constructor(
+    private readonly trpc: TrpcService,
+    private readonly usersRouter: UsersRouter,
+  ) {}
 
   appRouter = this.trpc.router({
     hello: this.trpc.procedure
@@ -20,6 +24,7 @@ export class TrpcRouter {
           greeting: `Hello ${name ? name : `Bilbo`}`,
         };
       }),
+    users: this.usersRouter.userRouter
   });
 
   applyMiddleware(app: INestApplication) {
@@ -27,6 +32,7 @@ export class TrpcRouter {
       `/trpc`,
       trpcExpress.createExpressMiddleware({
         router: this.appRouter,
+        createContext: createTRPCContext
       }),
     );
   }

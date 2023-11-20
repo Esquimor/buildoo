@@ -2,7 +2,11 @@
   "name": "buildoo",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "start:web": "nx run web:serve:developement",
+    "start:server": "nx run server:serve:developement",
+    "start:all": "nx run-many -t serve -p server web"
+  },
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.14.5",

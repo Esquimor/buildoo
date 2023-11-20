@@ -11,6 +11,7 @@ import { TrpcRouter } from './app/trpc/trpc.router';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const trpc = app.get(TrpcRouter);
