@@ -23,10 +23,10 @@ export class UsersRouter {
           greeting: `Hello user ${name ? name : `Bilbo`}`,
         };
       }),
-    secretPlace: this.trpc.adminProcedure
-      .query(({ ctx}) => {
+    secretPlace: this.trpc.authentificatedProcedure
+      .query(({ ctx }) => {
 
-        return `Id: 123`
+        return `Id: ${ctx.user.id}`
       }),
   });
 }

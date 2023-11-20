@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { TrpcService } from '../app/trpc/trpc.service';
 import { TRPCError } from '@trpc/server';
-import jwt from "jsonwebtoken"
 import { AuthService } from './auth.service';
 
 @Injectable()

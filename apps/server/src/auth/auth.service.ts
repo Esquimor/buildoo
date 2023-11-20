@@ -2,7 +2,7 @@
 import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import jwt from "jsonwebtoken"
-import { scryptSync, randomBytes, timingSafeEqual } from "node:crypto"
+import { scryptSync, randomBytes } from "node:crypto"
 
 @Injectable()
 export class AuthService {
@@ -16,7 +16,10 @@ export class AuthService {
     if (!(user.password === passwordHashed)) {
       throw new UnauthorizedException();
     }
-    const token = jwt.sign({ id: user.id }, process.env.JWT_PASSWORD) as string;
+    const token = jwt.sign({
+      exp: Math.floor(Date.now() / 1000) + (60 * 60),
+      data: user.id
+    }, process.env.JWT_PASSWORD) as string;
 
     return token;
   }
@@ -38,5 +41,14 @@ export class AuthService {
     const isAdded = await this.usersService.addAUser({email, password: passwordHashed, salt});
 
     return isAdded;
+  }
+
+  async decodeToken(token: string) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_PASSWORD) as { id: string };
+      return decoded
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
   }
 }
