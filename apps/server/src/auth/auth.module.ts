@@ -1,20 +1,15 @@
 import { Module, forwardRef  } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from '@server/users/users.module';
-import { TrpcModule } from '@server/app/trpc/trpc.module';
-import { TrpcService } from '@server/app/trpc/trpc.service';
-import { UsersService } from '@server/users/users.service';
 import { ConfigModule } from '@nestjs/config';
-import { User } from '@server/users/entities/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthRouter } from './auth.router';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    UsersModule,
-    forwardRef(() => TrpcModule),
-    TypeOrmModule.forFeature([User]),
+    UsersModule
   ],
-  providers: [UsersService, AuthService, TrpcService]
+  providers: [AuthService, AuthRouter],
+  exports: [AuthService, AuthRouter]
 })
 export class AuthModule {}

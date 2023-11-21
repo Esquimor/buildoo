@@ -23,7 +23,7 @@ export class AppRouter {
       `/trpc`,
       trpcExpress.createExpressMiddleware({
         router: this.appRouter,
-        createContext: createTRPCContext
+        createContext: createTRPCContext,
       }),
     );
   }

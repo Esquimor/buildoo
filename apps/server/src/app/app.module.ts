@@ -3,14 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TrpcModule } from '@server/app/trpc/trpc.module';
 import { AppRouter } from './app.router';
 import { UsersModule } from '@server/users/users.module';
-import { TrpcService } from './trpc/trpc.service';
-import { UsersRouter } from '@server/users/users.router';
-import { UsersService } from '@server/users/users.service';
 import { AuthModule } from '@server/auth/auth.module';
-import { AuthRouter } from '@server/auth/auth.router';
-import { AuthService } from '@server/auth/auth.service';
 import { ConfigModule } from '@nestjs/config';
-import { User } from '@server/users/entities/user.entity';
+import { ProjectsModule } from '@server/projects/projects.module';
 
 @Module({
   imports: [
@@ -29,9 +24,9 @@ import { User } from '@server/users/entities/user.entity';
     TrpcModule,
     UsersModule,
     AuthModule,
-    TypeOrmModule.forFeature([User])
+    ProjectsModule,
   ],
   controllers: [],
-  providers: [AppRouter, TrpcService, UsersRouter, UsersService, AuthRouter, AuthService],
+  providers: [AppRouter],
 })
 export class AppModule {}

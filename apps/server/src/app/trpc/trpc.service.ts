@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { AuthService } from '@server/auth/auth.service';
+import { User } from '@server/users/user.entity';
 import { UsersService } from '@server/users/users.service';
 import { TRPCError, initTRPC } from '@trpc/server';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 
 interface CreateInnerContextOptions extends CreateExpressContextOptions {
-  user: {
-    id: string;
-  } | null;
+  user: User | null;
 }
 
 export const createTRPCContext = (_opts: CreateInnerContextOptions) => {
