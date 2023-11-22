@@ -4,7 +4,7 @@ import { Button } from '@shared-ui';
 import { trpc } from "./trpc";
 
 export default function Index() {
-  const greeting = trpc.users.secretPlace.useQuery(undefined, {
+  const greeting = trpc.user.secretPlace.useQuery(undefined, {
     onError(err) {
       console.log(err)
     }

@@ -15,11 +15,18 @@ export class UsersService {
     return this.usersRepository.findOneBy({id})
   }
 
+  async findByIdWithOrganization(id: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({
+      where: {id},
+      relations: ["organization"]
+    })
+  }
+
   async findOneByEmail(email: string): Promise<User | undefined> {
     return this.usersRepository.findOneBy({email})
   }
 
-  async addAUser(user: { email: string, password: string, salt: string}) {
+  async addAUser(user: { email: string, password: string, salt: string, organizationId: string; }) {
     const userSaved = await this.usersRepository.save(user)
     return userSaved
   }

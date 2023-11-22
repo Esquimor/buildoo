@@ -23,7 +23,7 @@ export default function Login() {
     onSuccess(data) {
       cookies.set('currentUser', JSON.stringify(data))
       localStorage.setItem("token", data.token)
-      router.push("/");
+      router.push("/home");
     }
   });
 

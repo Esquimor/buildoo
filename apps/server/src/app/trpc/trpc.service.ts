@@ -44,7 +44,8 @@ export class TrpcService {
 
     const decodedToken = await this.authService.decodeToken(token);
 
-    const user = await this.userService.findById(decodedToken.id);
+    const user = await this.userService.findByIdWithOrganization(decodedToken.data);
+
 
     if (!user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });

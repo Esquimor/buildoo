@@ -3,10 +3,14 @@ import { ConflictException, Injectable, InternalServerErrorException, Unauthoriz
 import { UsersService } from '../users/users.service';
 import jwt from "jsonwebtoken"
 import { scryptSync, randomBytes } from "node:crypto"
+import { OrganizationService } from '@server/organization/organization.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private organizationsService: OrganizationService
+  ) {}
 
   async signIn(email: string, password: string): Promise<{
     expiredAt: number;
@@ -49,14 +53,15 @@ export class AuthService {
       throw new InternalServerErrorException();
     }
 
-    const isAdded = await this.usersService.addAUser({email, password: passwordHashed, salt});
+    const newOrganization = await this.organizationsService.addOrganization({ name: email });
+    const isAdded = await this.usersService.addAUser({email, password: passwordHashed, salt, organizationId: newOrganization.id});
 
     return isAdded;
   }
 
   async decodeToken(token: string) {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_PASSWORD) as { id: string };
+      const decoded = jwt.verify(token, process.env.JWT_PASSWORD) as { data: string };
       return decoded
     } catch (e) {
       throw new InternalServerErrorException();

@@ -1,7 +1,7 @@
 import { Contractor } from '@server/contractors/contractors.entity';
+import { Organization } from '@server/organization/organization.entity';
 import { Stash } from '@server/stashs/stashs.entity';
-import { User } from '@server/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Project {
@@ -11,9 +11,12 @@ export class Project {
   @Column()
   name: string;
 
-  @ManyToMany(() => User, (user) => user.projects)
-  @JoinTable()
-  users: User[]
+  @ManyToOne(() => Organization, (organization) => organization.projects)
+  @JoinColumn({ name: "organizationId" })
+  organization: Organization;
+
+  @Column({ nullable: true })
+  organizationId: string;
 
   @OneToMany(() => Stash, stash => stash.project)
   stashs: Stash[]

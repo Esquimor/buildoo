@@ -4,6 +4,7 @@ import { TrpcService, createTRPCContext } from './trpc/trpc.service';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { UsersRouter } from '@server/users/users.router';
 import { AuthRouter } from '@server/auth/auth.router';
+import { ProjectsRouter } from '@server/projects/projects.router';
 
 @Injectable()
 export class AppRouter {
@@ -11,11 +12,13 @@ export class AppRouter {
     private readonly trpc: TrpcService,
     private readonly usersRouter: UsersRouter,
     private readonly authRouter: AuthRouter,
+    private readonly projectRouter: ProjectsRouter,
   ) {}
 
   appRouter = this.trpc.router({
-    users: this.usersRouter.userRouter,
+    user: this.usersRouter.userRouter,
     auth: this.authRouter.authRouter,
+    project: this.projectRouter.projectRouter,
   });
 
   applyMiddleware(app: INestApplication) {

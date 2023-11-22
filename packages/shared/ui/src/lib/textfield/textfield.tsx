@@ -17,7 +17,7 @@ export function Textfield({
   <div
     className={className}
   >
-    <Label {...labelProps} />
+    <Label {...labelProps} className={`${labelProps?.className} mb-2`} />
     <Input {...inputProps} />
   </div>
   );
