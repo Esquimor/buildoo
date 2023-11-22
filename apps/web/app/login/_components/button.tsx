@@ -3,12 +3,15 @@
 import { trpc } from "../../trpc";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useCookies } from 'next-client-cookies';
 
 export default function Button() {
     const router = useRouter();
+    const cookies = useCookies();
   
     const login =  trpc.auth.login.useMutation({
       onSuccess(data) {
+        cookies.set('currentUser', JSON.stringify(data))
         localStorage.setItem("token", data.token)
         router.push("/");
       },

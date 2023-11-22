@@ -13,7 +13,7 @@ export const trpc = createTRPCNext<AppRouterType>({
           url: "http://localhost:3000/trpc", // you should update this to use env variables
           async headers() {
             const token = localStorage.getItem("token")
-
+            
             return {
               Authorization: token ? `Bearer ${localStorage.getItem("token")}` : ""
             }

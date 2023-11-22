@@ -1,7 +1,6 @@
-"use client"
-
+import RootTrpc from './_components/rootTrpc';
 import './styles.css';
-import { trpc } from './trpc';
+import { CookiesProvider } from 'next-client-cookies/server';
 
 export const metadata = {
   title: 'Welcome to web',
@@ -14,10 +13,31 @@ function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <CookiesProvider>
+      <html lang="en">
+        <body>
+          <div className="flex flex-col w-screen">
+            <div className="grow h-screen">
+              {/* @ts-ignore */}
+              <RootTrpc>
+                <div>
+                  {children}
+                </div>
+              </RootTrpc>
+            </div>
+            <footer className="grid grid-cols-4 gap-4 bg-gray-700 text-white p-8">
+              <div>
+                Super footer
+              </div>
+              <div/>
+              <div/>
+              <div></div>
+            </footer>
+          </div>
+        </body>
+      </html>
+    </CookiesProvider>
   );
 }
 
-export default trpc.withTRPC(RootLayout)
+export default RootLayout

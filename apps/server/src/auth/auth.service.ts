@@ -8,7 +8,11 @@ import { scryptSync, randomBytes } from "node:crypto"
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async signIn(email: string, password: string): Promise<string> {
+  async signIn(email: string, password: string): Promise<{
+    expiredAt: number;
+    token: string;
+    userId: string;
+  }> {
     const user = await this.usersService.findOneByEmail(email);
 
     const passwordHashed = await scryptSync(password, user.salt, 42).toString("base64");
@@ -16,12 +20,19 @@ export class AuthService {
     if (!(user.password === passwordHashed)) {
       throw new UnauthorizedException();
     }
+
+    const expiredAt = Math.floor(Date.now() / 1000) + (60 * 60 * 24);
+
     const token = jwt.sign({
-      exp: Math.floor(Date.now() / 1000) + (60 * 60),
+      exp: expiredAt,
       data: user.id
     }, process.env.JWT_PASSWORD) as string;
 
-    return token;
+    return {
+      expiredAt,
+      token,
+      userId: user.id
+    };
   }
 
   async register(email: string, password: string) {

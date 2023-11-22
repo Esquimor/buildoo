@@ -22,10 +22,8 @@ export class AuthRouter {
       .mutation(async ({ input }) => {
         const { email, password } = input;
         try {
-          const token = await this.authService.signIn(email, password);
-          return {
-            token
-          };
+          const tokenData = await this.authService.signIn(email, password);
+          return tokenData;
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
