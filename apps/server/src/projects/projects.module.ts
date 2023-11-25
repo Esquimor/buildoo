@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Project } from './projects.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +12,7 @@ import { User } from '@server/users/user.entity';
   imports: [
     TypeOrmModule.forFeature([Project]),
     StashsModule,
-    ContractorsModule,
+    forwardRef(() => ContractorsModule),
     TypeOrmModule.forFeature([User]),
   ],
   providers: [ProjectsService, ProjectsRouter],

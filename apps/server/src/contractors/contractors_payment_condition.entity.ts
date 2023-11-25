@@ -7,7 +7,12 @@ export class ContractorPaymentCondition {
   id: string;
 
   @Column()
-  name: string;
+  condition: string;
+
+  @Column({
+    default: false
+  })
+  completed: boolean;
 
   @ManyToOne(() => ContractorPayment, contractorPayment => contractorPayment.contractorPaymentConditions)
   contractorPayment: ContractorPayment;

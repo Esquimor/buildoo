@@ -8,7 +8,13 @@ export class ContractorPayment {
   id: string;
 
   @Column()
-  name: string;
+  date_payment: string;
+
+  @Column()
+  amount_ht: number;
+
+  @Column()
+  amount_ttc: number;
 
   @ManyToOne(() => Contractor, contractor => contractor.contractorPayments)
   contractor: Contractor;

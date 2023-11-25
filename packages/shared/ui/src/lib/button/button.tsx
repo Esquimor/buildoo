@@ -2,17 +2,21 @@ import { MouseEvent } from "react";
 
 export interface ButtonProps {
   label?: string;
-  color?: "blue" | "red" | "green";
+  color?: "blue" | "red" | "green" | "gray";
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
+  type?: "button" | "submit";
 }
 
 export function Button({
   label,
   color = "blue",
-  onClick
+  onClick,
+  className: classNameProps,
+  type="button",
 }: ButtonProps) {
 
-  let className = "font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline";;
+  let className = `${classNameProps} font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`;
 
   switch(color) {
     case "blue":
@@ -24,6 +28,9 @@ export function Button({
     case "green":
       className = `${className} bg-green-500 hover:bg-green-700 text-white`;
       break;
+    case "gray":
+      className = `${className} bg-gray-500 hover:bg-gray-700 text-white`;
+      break;
     default:
       break;
   }
@@ -31,7 +38,7 @@ export function Button({
   return (
     <button
       className={className}
-      type="button"
+      type={type}
       onClick={onClick}
     >
       {label}

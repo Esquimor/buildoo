@@ -18,8 +18,9 @@
       "@shared-ui": ["./packages/shared/ui/src/index.ts"],
       "@shared-ui/styles": ["./packages/shared/ui/src/styles.css"],
       "@tailwind-preset/*": ["./packages/tailwind-preset/*"],
-      "@shared-lang": ["./packages/shared/lang/src/index.ts"],
-      "@server/*": ["./apps/server/src/*"]
+      "@shared-lang": ["./packages/shared/lang/index.ts"],
+      "@server/*": ["./apps/server/src/*"],
+      "@shared-type": ["./packages/shared/type/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

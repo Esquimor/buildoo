@@ -2,3 +2,8 @@ export * from './lib/button/button';
 export * from "./lib/input/input";
 export * from "./lib/textfield/textfield";
 export * from "./lib/label/label";
+export * from "./lib/card/card";
+export * from "./lib/tabs/tabs";
+export * from "./lib/sidebar/sidebar";
+export * from "./lib/select/select";
+export * from "./lib/selectfield/selectfield";

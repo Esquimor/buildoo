@@ -7,6 +7,7 @@ import { AuthModule } from '@server/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProjectsModule } from '@server/projects/projects.module';
 import { OrganizationModule } from '@server/organization/organization.module';
+import { ContractorsModule } from '@server/contractors/contractors.module';
 
 @Module({
   imports: [
@@ -23,10 +24,11 @@ import { OrganizationModule } from '@server/organization/organization.module';
       autoLoadEntities: true,
     }),
     TrpcModule,
+    OrganizationModule,
     UsersModule,
     AuthModule,
     ProjectsModule,
-    OrganizationModule,
+    ContractorsModule,
   ],
   controllers: [],
   providers: [AppRouter],

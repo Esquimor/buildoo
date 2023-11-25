@@ -1,5 +1,6 @@
 import RootTrpc from './_components/rootTrpc';
 import './styles.css';
+import 'react-data-grid/lib/styles.css';
 import { CookiesProvider } from 'next-client-cookies/server';
 
 export const metadata = {
@@ -17,7 +18,7 @@ function RootLayout({
       <html lang="en">
         <body>
           <div className="flex flex-col w-screen">
-            <div className="grow h-screen">
+            <div className="grow min-h-screen">
               {/* @ts-ignore */}
               <RootTrpc>
                 <div>

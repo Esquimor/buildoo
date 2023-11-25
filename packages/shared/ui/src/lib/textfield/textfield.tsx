@@ -14,11 +14,11 @@ export function Textfield({
 }: TextfieldProps) {
 
   return (
-  <div
-    className={className}
-  >
-    <Label {...labelProps} className={`${labelProps?.className} mb-2`} />
-    <Input {...inputProps} />
-  </div>
+    <div
+      className={className}
+    >
+      <Label {...labelProps} className={`${labelProps?.className} mb-2`} />
+      <Input {...inputProps} />
+    </div>
   );
 }

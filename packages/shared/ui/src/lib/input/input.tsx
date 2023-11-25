@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 
 export interface InputProps {
     id?: string;
-    type?: "text" | "password";
+    type?: "text" | "password" | "number";
     placeholder?: string;
     onChange?: (e: ChangeEvent<Element>) => void;
     onBlur?: (e: ChangeEvent<Element>) => void;
@@ -22,7 +22,7 @@ export function Input({
     textInfo,
 }: InputProps) {
 
-  let className = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+  let className = "appearance-none border border-gray-300 rounded w-full py-2.5 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
 
   let classNameInfo = "text-xs italic"
 

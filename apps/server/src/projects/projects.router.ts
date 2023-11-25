@@ -26,6 +26,26 @@ export class ProjectsRouter {
           });
         }
       }),
+    getProjectWithContractors: this.trpc.authentificatedProcedure
+      .input(
+        z.object({
+          id: z.string()
+        })
+      )
+      .query(async ({ ctx, input }) => {
+        const { user } = ctx;
+        const { id } = input;
+
+        try {
+          const projectFull = await this.projectsService.findOneWithContractors(id, user.organization.id);
+          return projectFull
+        } catch (error) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: (error as Error).message,
+        });
+      }
+    }),
     create: this.trpc.authentificatedProcedure
       .input(
         z.object({

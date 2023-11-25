@@ -15,7 +15,8 @@ export interface LabelProps {
         "text-8xl" |
         "text-9xl";
     color?: "text-gray-700" |
-        "text-red-700";
+        "text-red-700" |
+        "text-white";
     weight?: "font-thin" |
         "font-extralight" |
         "font-light" |

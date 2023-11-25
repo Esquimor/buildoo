@@ -11,6 +11,27 @@ export class ProjectsService {
     private projectsRepository: Repository<Project>,
   ) {}
 
+  async findOne(projectId: string, organizationId: string): Promise<Project> {
+    const project = await this.projectsRepository.findOne({
+      where: {
+        id: projectId,
+        organizationId
+      },
+    });
+    return project;
+  }
+
+  async findOneWithContractors(projectId: string, organizationId: string): Promise<Project> {
+    const project = await this.projectsRepository.findOne({
+      where: {
+        id: projectId,
+        organizationId
+      },
+      relations: ["contractors", "contractors.contractorPayments",  "contractors.contractorPayments.contractorPaymentConditions"]
+    });
+    return project;
+  }
+
   async findAllByOrganizationId(organizationId: string): Promise<Project[]> {
     const projects = await this.projectsRepository.findBy({
       organizationId
