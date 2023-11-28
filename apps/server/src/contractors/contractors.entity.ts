@@ -21,12 +21,6 @@ export class Contractor {
   @Column()
   decennial_civil_liability: string;
 
-  @Column()
-  price_ht: number;
-
-  @Column()
-  price_ttc: number;
-
   @Column({
     type: "enum",
     enum: ContractorWorkStatus,
@@ -37,6 +31,20 @@ export class Contractor {
   @ManyToOne(() => Project, project => project.contractors)
   project: Project;
 
-  @OneToMany(() => ContractorPayment, contractorPayment => contractorPayment.contractor)
-  contractorPayments: ContractorPayment[]
+  @OneToMany(() => ContractorPayment, contractorPayment => contractorPayment.contractor, {
+    cascade: true
+  })
+  contractorPayments: ContractorPayment[];
+
+  addContractorPayment(contractorPayment: ContractorPayment) {
+    if (!this.contractorPayments || this.contractorPayments.length === 0) {
+        this.contractorPayments = [contractorPayment]
+        return; 
+    }
+    this.contractorPayments = [...this.contractorPayments, contractorPayment]
+  }
+
+  resetContractorPayments() {
+    this.contractorPayments = [];
+  }
 }

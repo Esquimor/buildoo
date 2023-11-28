@@ -3,6 +3,8 @@ import { Button, Label } from "@shared-ui";
 import { useState } from "react";
 import DataGrid, { CellClickArgs } from 'react-data-grid';
 import { SidepanelAddContractor } from "../sidepanelAddContractor";
+import useParamsQuery from "../../../../_hooks/useParamsQuery";
+import { SidepanelContractor } from "../sidepanelContractor";
 
 interface ListContractorsProps {
   contractors: Contractor[];
@@ -17,15 +19,23 @@ export function ListContractors({
   const columns = [
     { key: 'name', name: 'Name' },
     { key: 'type', name: 'Type' },
-    { key: 'decennial_civil_liability', name: 'RC décennal' },
     { key: 'work_status', name: 'Work status' },
   ];
 
   const [openSidepanelAdd, SetOpenSidepanelAdd] = useState(false);
+  
+  const {
+    setParamsQuery,
+    getParamByName
+  } = useParamsQuery();
 
   const handleCellClick = (args: CellClickArgs<Contractor>) => {
-    console.log(args)
+    setParamsQuery("contractor", `${args.row.id}`)
   }
+
+  const contractorIdSelected = getParamByName("contractor");
+
+  const contractor = contractors.find(({ id }) => id === contractorIdSelected)
 
   return (
     <>
@@ -60,6 +70,11 @@ export function ListContractors({
         onClose={() => SetOpenSidepanelAdd(false)}
         projectId={projectId}
       />
+      {contractor && <SidepanelContractor
+        open={!!contractor}
+        onClose={() => setParamsQuery("contractor", null)}
+        contractor={contractor}
+      />}
     </>
   )
 }

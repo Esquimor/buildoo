@@ -1,18 +1,19 @@
 "use client"
 
-import { Label, LabelProps } from "@shared-ui";
+import { FileUpload, FileUploadProps, Label, LabelProps } from "@shared-ui";
 import { Controller, useFormContext } from "react-hook-form";
-import { DatepickerSingle } from "../../datepickerSingle";
 
-interface DatepickerControllerProps {
+interface FileUploadControllerProps {
     name: string;
-    labelProps: LabelProps
+    labelProps?: LabelProps;
+    fileUploadProps?: Omit<FileUploadProps, "value" | "onChange">
 }
 
-export function DatepickerController({
+export function FileUploadController({
     name,
     labelProps,
-}: DatepickerControllerProps) {
+    fileUploadProps,
+}: FileUploadControllerProps) {
 
     const {
         control,
@@ -30,10 +31,14 @@ export function DatepickerController({
                   className="mb-3"
                 >
                   <Label {...labelProps} className={`${labelProps?.className} mb-2`} />
-                  <DatepickerSingle 
-                    value={value} 
-                    onChange={onChange}
-                  /> 
+                  <FileUpload
+                    value={value?.fileName}
+                    onChange={(event) => {
+                      if (event.target.files)
+                        onChange(event.target.files[0]);
+                    }}
+                    {...fileUploadProps}
+                  />
                 </div>
               )}
         />

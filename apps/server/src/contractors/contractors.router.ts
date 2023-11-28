@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { TrpcService } from '../app/trpc/trpc.service';
 import { TRPCError } from '@trpc/server';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import { ContractorsService } from './contractors.service';
 import { Contractor } from './contractors.entity';
-import { ContractorType } from '@shared-type';
+import { ContractorPaymentStatus, ContractorType } from '@shared-type';
 import { ContractorPayment } from './contractors_payment.entity';
 import { ProjectsService } from '@server/projects/projects.service';
 
@@ -23,8 +23,6 @@ export class ContractorsRouter {
           projectId: z.string(),
           name: z.string().min(1),
           type: z.string().min(1),
-          priceHT: z.number(),
-          priceTTC: z.number(),
           decennial_civil_liability: z.string(),
           contractorPayment: z.array(z.object({
             amountHT: z.number(),
@@ -49,15 +47,13 @@ export class ContractorsRouter {
               message: "NO_PROJECT_FOUND",
             });
           }
-        
+
           const contractor = new Contractor();
 
           contractor.project = project
 
           contractor.name = input.name;
           contractor.type = input.type as ContractorType;
-          contractor.price_ht = input.priceHT;
-          contractor.price_ttc = input.priceTTC;
           contractor.decennial_civil_liability = input.decennial_civil_liability;
 
           contractor.contractorPayments = input.contractorPayment.map(inputContractPayment => {
@@ -68,7 +64,7 @@ export class ContractorsRouter {
             contractorPayment.date_payment = inputContractPayment.datePayment;
 
             return contractorPayment;
-          })
+          });
 
           const contractorSaved = await this.contractorsService.createAContractor(contractor);
           return contractorSaved
@@ -79,6 +75,73 @@ export class ContractorsRouter {
           });
         }
       }),
+      editPayment: this.trpc.authentificatedProcedure
+        .input(z.object({
+          id: z.string(),
+          date_payment: z.string().optional(),
+          amount_ht: z.number().optional(),
+          amount_ttc: z.number().optional(),
+          status: z.string().optional(),
+        }))
+        .mutation(async ({ input, ctx }) => {
+          const { user } = ctx;
+
+          const contractorPayment = await this.contractorsService
+            .getContractorPaymentByIdAndOrganizationId(input.id, user.organizationId);
+
+          if (!contractorPayment) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Not_Found",
+            });
+          }
+
+          if (input.date_payment) {
+            contractorPayment.date_payment = input.date_payment;
+          }
+          if (input.amount_ht) {
+            contractorPayment.amount_ht = input.amount_ht;
+          }
+          if (input.amount_ttc) {
+            contractorPayment.amount_ttc = input.amount_ttc
+          };
+          if (input.status) {
+            contractorPayment.status = input.status as ContractorPaymentStatus
+          }
+
+          const paymentSaved = await this.contractorsService
+            .updatePayment(contractorPayment);
+
+          return paymentSaved;
+        }),
+      deletePayment: this.trpc.authentificatedProcedure
+        .input(z.object({
+          id: z.string(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          
+          const { user } = ctx;
+
+          const contractorPayment = await this.contractorsService
+            .getContractorPaymentByIdAndOrganizationId(input.id, user.organizationId);
+
+          if (!contractorPayment) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Not_Found",
+            });
+          }
+
+          try {
+            await this.contractorsService.deletePayment(input.id)
+            return true;
+          } catch (error) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: (error as Error).message,
+            });
+          }
+        })
   });
 }
 

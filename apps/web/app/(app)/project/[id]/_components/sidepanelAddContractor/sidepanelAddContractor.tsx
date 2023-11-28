@@ -7,14 +7,13 @@ import * as z from 'zod';
 import { ContractorType } from "@shared-type"
 import { DatepickerController } from "apps/web/app/_components/form/datapickerController";
 import { trpc } from "apps/web/app/trpc";
+import { FileUploadController } from "apps/web/app/_components/form/fileUploadController/fileUploadController";
 
 type FormValues = {
   name: string;
   type: string;
   juridicalStatus: string;
-  priceHT: string;
-  priceTTC: string;
-  decennial_civil_liability: string;
+  decennial_civil_liability: File;
   contractorPayment: {
     amountHT: string;
     amountTTC: string;
@@ -43,9 +42,7 @@ export function SidepanelAddContractor({
   const schema = z.object({
     name: z.string().min(1, { message: "Required" }),
     type: z.string().min(1, { message: "Required" }),
-    priceHT: z.string(),
-    priceTTC: z.string(),
-    decennial_civil_liability: z.string(),
+    decennial_civil_liability: z.instanceof(File),
     contractorPayment: z.array(z.object({
       amountHT: z.string(),
       amountTTC: z.string(),
@@ -64,8 +61,6 @@ export function SidepanelAddContractor({
     defaultValues: {
       name: "",
       type: ContractorType.Unknow,
-      priceHT: "",
-      priceTTC: "",
       contractorPayment: [
         {
           amountHT: "",
@@ -82,13 +77,18 @@ export function SidepanelAddContractor({
     }
   });
 
-  const onSubmit = (values: FormValues) => {
+  const toBase64 = (file: File) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+
+  const onSubmit = async (values: FormValues) => {
     createContractor.mutate({
       ...values, 
       projectId,
-      priceHT: +values.priceHT,
-      priceTTC: +values.priceTTC,
-      decennial_civil_liability: values.decennial_civil_liability,
+      decennial_civil_liability: await toBase64(values.decennial_civil_liability)as string,
       contractorPayment: values.contractorPayment.map(contractorPayment => ({
         ...contractorPayment,
         amountHT: +contractorPayment.amountHT,
@@ -159,32 +159,13 @@ export function SidepanelAddContractor({
                 <div
                   className="grid grid-cols-2 gap-4"
                 >
-                  <TextfieldController
+                  <FileUploadController
                     name="decennial_civil_liability"
                     labelProps={{
                       label: "Rc décennal"
                     }}
-                  />
-                </div>
-                <div
-                  className="grid grid-cols-2 gap-4"
-                >
-                  <TextfieldController
-                    name="priceHT"
-                    labelProps={{
-                      label: "Price HT"
-                    }}
-                    inputProps={{
-                      type: "number"
-                    }}
-                  />
-                  <TextfieldController
-                    name="priceTTC"
-                    labelProps={{
-                      label: "Price TTC"
-                    }}
-                    inputProps={{
-                      type: "number"
+                    fileUploadProps={{
+                      helpText: "Pdf only"
                     }}
                   />
                 </div>

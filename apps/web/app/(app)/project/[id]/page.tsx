@@ -2,9 +2,8 @@
 
 import { Card, Label, Tabs } from "@shared-ui";
 import { trpc } from "apps/web/app/trpc";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
 import { ListContractors } from "./_components/listContractors";
+import useParamsQuery from "../../_hooks/useParamsQuery";
 
 interface ProjectProps {
   params: {
@@ -19,25 +18,14 @@ export default function Project({
   const project = trpc.project.getProjectWithContractors.useQuery({
     id: params.id
   });
-
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-   // Get a new searchParams string by merging the current
-  // searchParams with a provided key/value pair
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(name, value)
- 
-      return params.toString()
-    },
-    [searchParams]
-  )
+  
+  const {
+    setParamsQuery,
+    getParamByName
+  } = useParamsQuery();
 
   const handleChangeTab = (indexTab: number) => {
-    router.push(pathname + "?" + createQueryString("tab", `${indexTab}`))
+    setParamsQuery("tab", `${indexTab}`)
   }
 
   const tabs = [
@@ -60,8 +48,7 @@ export default function Project({
     }
   ]
 
-  // @ts-ignore: check if has tab before get it
-  const tab = searchParams.has("tab") ? +searchParams.get("tab") : 0;
+  const tab = +getParamByName("tab") || 0;
   
   return (
     <div

@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Contractor } from './contractors.entity';
 import { ContractorPaymentCondition } from './contractors_payment_condition.entity';
+import { ContractorPaymentStatus } from '@shared-type';
 
 @Entity()
 export class ContractorPayment {
@@ -15,6 +16,13 @@ export class ContractorPayment {
 
   @Column()
   amount_ttc: number;
+
+  @Column({
+    type: "enum",
+    enum: ContractorPaymentStatus,
+    default: ContractorPaymentStatus.Unknow
+  })
+  status: ContractorPaymentStatus;
 
   @ManyToOne(() => Contractor, contractor => contractor.contractorPayments)
   contractor: Contractor;
