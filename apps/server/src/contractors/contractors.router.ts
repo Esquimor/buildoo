@@ -7,6 +7,7 @@ import { Contractor } from './contractors.entity';
 import { ContractorPaymentStatus, ContractorType } from '@shared-type';
 import { ContractorPayment } from './contractors_payment.entity';
 import { ProjectsService } from '@server/projects/projects.service';
+import { ContractorPaymentCondition } from './contractors_payment_condition.entity';
 
 @Injectable()
 export class ContractorsRouter {
@@ -31,11 +32,10 @@ export class ContractorsRouter {
             contractorPaymentCondition: z.array(z.object({
               condition: z.string()
             })).optional()
-          }))
+          })).optional()
         }),
       )
       .mutation(async ({ input, ctx }) => {
-
         const { user } = ctx;
 
         try {
@@ -62,6 +62,13 @@ export class ContractorsRouter {
             contractorPayment.amount_ht = inputContractPayment.amountHT;
             contractorPayment.amount_ttc = inputContractPayment.amountTTC;
             contractorPayment.date_payment = inputContractPayment.datePayment;
+
+            contractorPayment.contractorPaymentConditions = inputContractPayment.contractorPaymentCondition.map(condition => {
+              const contractorPaymentCondition = new ContractorPaymentCondition();
+
+              contractorPaymentCondition.condition = condition.condition;
+              return contractorPaymentCondition;
+            })
 
             return contractorPayment;
           });

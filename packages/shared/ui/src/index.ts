@@ -15,3 +15,4 @@ export * from "./lib/list/list";
 export * from "./lib/listItem/listItem";
 export * from "./lib/info/info";
 export * from "./lib/modalForm/modalForm";
+export * from "./lib/accordion/accordion";

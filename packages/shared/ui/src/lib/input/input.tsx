@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 
 export interface InputProps {
     id?: string;
-    type?: "text" | "password" | "number";
+    type?: "text" | "password" | "number" | "textarea" ;
     placeholder?: string;
     onChange?: (e: ChangeEvent<Element>) => void;
     onBlur?: (e: ChangeEvent<Element>) => void;
@@ -19,7 +19,7 @@ export function Input({
     onBlur,
     value,
     hasError = false,
-    textInfo,
+    textInfo = "",
 }: InputProps) {
 
   let className = "appearance-none border border-gray-300 rounded w-full py-2.5 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -35,15 +35,15 @@ export function Input({
   return (
     <div>
       <input
-          className={className}
-          id={id}
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
+        className={className}
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
       />
-      {textInfo != "" && (
+      {textInfo !== "" && (
         <p
           className={classNameInfo}
         >

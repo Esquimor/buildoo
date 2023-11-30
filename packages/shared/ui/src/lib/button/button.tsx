@@ -6,6 +6,7 @@ export interface ButtonProps {
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   type?: "button" | "submit";
+  size?: "xs" | "sm" | "md"
 }
 
 export function Button({
@@ -14,9 +15,21 @@ export function Button({
   onClick,
   className: classNameProps,
   type="button",
+  size="md",
 }: ButtonProps) {
 
-  let className = `${classNameProps} font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`;
+  let className = `${classNameProps} font-bold rounded focus:outline-none focus:shadow-outline`;
+
+  switch(size) {
+    case "xs":
+      className = `${className} py-1 px-2 text-xs`;
+      break;
+    case "sm":
+      className = `${className} py-1.5 px-3 text-sm`;
+      break;
+    default:
+      className = `${className} py-2 px-4`
+  }
 
   switch(color) {
     case "blue":

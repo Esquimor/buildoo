@@ -6,7 +6,7 @@ export interface TabsProps {
     label: string;
   }[];
   currentTab: number;
-  onClickTab: (idClickedTab: string | number) => void; 
+  onClickTab: (idClickedTab: number) => void; 
 }
 
 export function Tabs({
@@ -17,12 +17,12 @@ export function Tabs({
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
       <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-        {tabs.map(tab => (
+        {tabs.map((tab,index) => (
           <Tab
             key={tab.id}
-            selected={tab.id === currentTab}
+            selected={index === currentTab}
             label={tab.label}
-            onClick={() => onClickTab(tab.id)}
+            onClick={() => onClickTab(index)}
           />
         ))}
       </ul>

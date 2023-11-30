@@ -31,6 +31,8 @@ export class ContractorPayment {
   @Column({ nullable: true })
   contractorId: string;
 
-  @OneToMany(() => ContractorPaymentCondition, contractorPaymentCondition => contractorPaymentCondition.contractorPayment)
+  @OneToMany(() => ContractorPaymentCondition, contractorPaymentCondition => contractorPaymentCondition.contractorPayment, {
+    cascade: true
+  })
   contractorPaymentConditions: ContractorPaymentCondition[]
 }

@@ -1,15 +1,31 @@
 "use client";
 
 import { ContractorPayment } from '@server/contractors/contractors_payment.entity';
-import DataGrid, { RenderCellProps, RenderEditCellProps, RowsChangeData } from 'react-data-grid';
+import DataGrid, { ColSpanArgs, Column, RenderCellProps, RenderEditCellProps, RowsChangeData } from 'react-data-grid';
 import dayjs from 'dayjs';
 import "./sidepanelContractorPayment.style.css"
 import { ContractorPaymentStatus, ContractorPaymentStatusData } from '@shared-type';
-import { Badge, Button, Label } from '@shared-ui';
+import { Accordion, Badge, Button, Label } from '@shared-ui';
 import { trpc } from 'apps/web/app/trpc';
 import { Menu } from './menu/menu';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ModalAddPayment } from './modalAddPayment';
+import { CellExpanderFormatter } from 'apps/web/app/_components/datagrid/cellExpanderFormatter';
+
+interface Master extends ContractorPayment {
+  type: "MASTER";
+  expanded: boolean;
+}
+
+interface Detail {
+  type: "DETAIL";
+  id: string;
+  parentId: string;
+}
+
+type ContractorPaymentRow =
+  | Master
+  | Detail;
 
 interface SidepanelContractorPayments {
   payments: ContractorPayment[]
@@ -20,6 +36,12 @@ export function SidepanelContractorPayments({
   payments,
   contractorId,
 }: SidepanelContractorPayments) {
+  
+  const [rows, setRows] = useState([...payments].map(payment => ({
+    ...payment,
+    type: "MASTER",
+    expanded: false
+  })) as unknown as ContractorPaymentRow[]);
 
   const deletePayment = trpc.contractor.deletePayment.useMutation();
 
@@ -29,19 +51,73 @@ export function SidepanelContractorPayments({
 
   const updatePayment =  trpc.contractor.editPayment.useMutation();
 
-  const onRowsChange = (rows: ContractorPayment[], data: RowsChangeData<ContractorPayment>) => {
-    const findRowChanged = rows[data.indexes[0]];
+  const onRowsChange = (rows: ContractorPaymentRow[], { indexes, column }: RowsChangeData<ContractorPaymentRow>) => {
+    const findRowChanged = rows[indexes[0]];
 
     if (!findRowChanged) return;
-
-    updatePayment.mutate(findRowChanged);
+    
+    if (findRowChanged.type === 'MASTER') {
+      if (column.key === "expanded") {
+        if (findRowChanged.expanded) {
+          rows.splice(indexes[0] + 1, 0, {
+            type: 'DETAIL',
+            id: findRowChanged.id + 100,
+            parentId: findRowChanged.id
+          });
+        } else {
+          rows.splice(indexes[0] + 1, 1);
+        }
+        setRows(rows);
+      } else {
+        updatePayment.mutate(findRowChanged);
+      }
+    }
   }
 
-  const columns = [ 
+  const columns = useMemo((): readonly Column<ContractorPaymentRow>[] => [
+    {
+      key: 'expanded',
+      name: '',
+      minWidth: 30,
+      width: 30,
+      colSpan(args) {
+        // 6 =>number of columns
+        return args.type === 'ROW' && args.row.type === 'DETAIL' ? 6 : undefined;
+      },
+      renderCell({ row, tabIndex, onRowChange }) {
+        if (row.type === 'DETAIL') {
+          return (
+            <Accordion
+              items={[
+                {
+                  id: "1",
+                  title: "Foo",
+                  children: <div>
+                    Bar
+                  </div>
+                }
+              ]}
+            />
+          );
+        }
+
+        return (
+          <CellExpanderFormatter
+            expanded={row.expanded}
+            tabIndex={tabIndex}
+            onCellExpand={() => {
+              onRowChange({ ...row, expanded: !row.expanded });
+            }}
+          />
+        );
+      }
+    },
     { 
       key: 'date_payment',
       name: 'Date de Paiement',
-      renderCell(props: RenderCellProps<ContractorPayment>) {
+      renderCell(props: RenderCellProps<ContractorPaymentRow>) {
+        if (props.row.type === "DETAIL") return null;
+
         const value = props.row.date_payment;
         const valueFormatted = dayjs(value).format("DD/MM/YYYY")
         return (
@@ -50,7 +126,8 @@ export function SidepanelContractorPayments({
           </div>
         );
       },
-      renderEditCell({ row, onRowChange }: RenderEditCellProps<ContractorPayment>) {
+      renderEditCell({ row, onRowChange }: RenderEditCellProps<ContractorPaymentRow>) {
+        if (row.type === "DETAIL") return null;
         return (
           <input type="date" value={row.date_payment} className="text-sm w-full" 
           onChange={(e) => onRowChange({ ...row, date_payment: e.target.value })}
@@ -61,10 +138,13 @@ export function SidepanelContractorPayments({
     {
       key: 'amount_ht',
       name: 'Somme HT',
-      renderCell({ row }: RenderCellProps<ContractorPayment>) {
+      renderCell({ row }: RenderCellProps<ContractorPaymentRow>) {
+        if (row.type === "DETAIL") return null;
+
         return row.amount_ht?.toLocaleString()
       },
-      renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPayment>) {
+      renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPaymentRow>) {
+        if (row.type === "DETAIL") return null;
         return (
           <input
             type="number"
@@ -78,10 +158,12 @@ export function SidepanelContractorPayments({
     {
       key: 'amount_ttc',
       name: 'Somme TTC',
-      renderCell({ row }: RenderCellProps<ContractorPayment>) {
+      renderCell({ row }: RenderCellProps<ContractorPaymentRow>) {
+        if (row.type === "DETAIL") return null;
         return row.amount_ttc?.toLocaleString()
       },
-      renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPayment>) {
+      renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPaymentRow>) {
+        if (row.type === "DETAIL") return null;
         return (
           <input
             type="number"
@@ -95,7 +177,8 @@ export function SidepanelContractorPayments({
     {
       key: 'status',
       name: 'Status',
-      renderCell(props: RenderCellProps<ContractorPayment>) {
+      renderCell(props: RenderCellProps<ContractorPaymentRow>) {
+        if (props.row.type === "DETAIL") return null;
         return (
           <Badge
             label={props.row.status}
@@ -105,7 +188,8 @@ export function SidepanelContractorPayments({
           />
         )
       },
-      renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPayment>) {
+      renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPaymentRow>) {
+        if (row.type === "DETAIL") return null;
         return (
           <div
             className="bg-white w-64 border border-gray-200 fixed z-40 flex flex-col p-2"
@@ -130,7 +214,8 @@ export function SidepanelContractorPayments({
       key: "menu",
       name: "",
       width: 50,
-      renderCell({ row }: RenderCellProps<ContractorPayment>) {
+      renderCell({ row }: RenderCellProps<ContractorPaymentRow>) {
+        if (row.type === "DETAIL") return null;
         return (
           <Menu
             onDelete={() => handleDeletePayment(row.id)}
@@ -138,7 +223,7 @@ export function SidepanelContractorPayments({
         )
       }
     }
-  ];
+  ], []);
 
   const [openAddPayment, setOpenAddPayment] = useState(false);
 
@@ -161,11 +246,11 @@ export function SidepanelContractorPayments({
       </div>
       <DataGrid
         columns={columns}
-        rows={payments}
+        rows={rows}
+        rowHeight={(row) => (row.type === 'DETAIL' ? 300 : 45)}
         style={{
           maxHeight: "100%"
         }}
-        rowHeight={40}
         onRowsChange={onRowsChange}
       />
       <ModalAddPayment

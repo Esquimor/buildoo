@@ -1,15 +1,16 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, Label, Sidebar } from "@shared-ui";
-import { SelectfieldController } from "apps/web/app/_components/form/selectfieldController";
-import { TextfieldController } from "apps/web/app/_components/form/textfieldController";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { Button, Label, Sidebar, Tabs } from "@shared-ui";
+import { FormProvider, useForm } from "react-hook-form";
 import * as z from 'zod';
 import { ContractorType } from "@shared-type"
-import { DatepickerController } from "apps/web/app/_components/form/datapickerController";
 import { trpc } from "apps/web/app/trpc";
-import { FileUploadController } from "apps/web/app/_components/form/fileUploadController/fileUploadController";
+import { General } from "./general";
+import { Payment } from "./payment";
+import { BaseSyntheticEvent, useState } from "react";
 
-type FormValues = {
+export type FormValues = {
   name: string;
   type: string;
   decennial_civil_liability: File;
@@ -52,7 +53,7 @@ export function SidepanelAddContractor({
       contractorPaymentCondition: z.array(z.object({
         condition: z.string()
       })).optional()
-    }))
+    })).optional()
   })
 
   const formMethods = useForm<FormValues>({
@@ -60,12 +61,7 @@ export function SidepanelAddContractor({
     defaultValues: {
       name: "",
       type: ContractorType.Unknow,
-      contractorPayment: [
-        {
-          amountHT: "",
-          amountTTC: "",
-        }
-      ]
+      contractorPayment: []
     }
   });
 
@@ -83,7 +79,9 @@ export function SidepanelAddContractor({
     reader.onerror = reject;
   });
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: FormValues, e: BaseSyntheticEvent | undefined) => {
+    e?.stopPropagation();
+    e?.preventDefault();
     createContractor.mutate({
       ...values, 
       projectId,
@@ -96,16 +94,23 @@ export function SidepanelAddContractor({
       }))
     });
   }
+  
+  const [tab, setTab] = useState(0)
 
-  const typeValues = Object.values(ContractorType).map(type => ({
-    id: type,
-    label: type
-  }));
-
-  const { fields: fieldsPayment, append: appendPayment, remove: removePayment } = useFieldArray({
-    control: formMethods.control,
-    name: "contractorPayment"
-  });
+  const tabs = [
+    {
+      id: 0,
+      name: "Général",
+      component: (
+        <General />
+      )
+    },
+    {
+      id: 1,
+      name: "Payment",
+      component: <Payment />
+    }
+  ]
 
   return (
     <Sidebar
@@ -113,9 +118,8 @@ export function SidepanelAddContractor({
       onClickOutside={onClose}
       width="1200px"
     >
-      <form
+      <div
         className="h-full overflow-scroll"
-        onSubmit={formMethods.handleSubmit(onSubmit)}
       >
         <FormProvider {...formMethods}>
           <div
@@ -129,109 +133,16 @@ export function SidepanelAddContractor({
             <main
               className="grow p-4 flex flex-col"
             >
-              <section>
-                <Label
-                  label="Général"
-                  size="text-2xl"
-                  weight="font-bold"
-                  className="mb-2"
-                />
-                <div
-                  className="grid grid-cols-2 gap-4"
-                >
-                  <TextfieldController
-                    name="name"
-                    labelProps={{
-                      label: "Name"
-                    }}
-                  />
-                  <SelectfieldController
-                    name="type"
-                    labelProps={{
-                      label: "Type"
-                    }}
-                    selectProps={{
-                      values: typeValues
-                    }}
-                  />
-                </div>
-                <div
-                  className="grid grid-cols-2 gap-4"
-                >
-                  <FileUploadController
-                    name="decennial_civil_liability"
-                    labelProps={{
-                      label: "Rc décennal"
-                    }}
-                    fileUploadProps={{
-                      helpText: "Pdf only"
-                    }}
-                  />
-                </div>
-              </section>
-              <section>
-                <Label
-                  label="Paiement"
-                  size="text-2xl"
-                  weight="font-bold"
-                  className="mb-2"
-                />
-                {fieldsPayment.map((field, index) => (
-                  <Card
-                    className="flex flex-col mb-4"
-                    key={field.id}
-                  >
-                    <div
-                      className="grid grid-cols-2 gap-4 w-full"
-                    >
-                      <TextfieldController
-                        name={`contractorPayment.${index}.amountHT`}
-                        labelProps={{
-                          label: "Amount HT"
-                        }}
-                      />
-                      <TextfieldController
-                        name={`contractorPayment.${index}.amountTTC`}
-                        labelProps={{
-                          label: "Price TTC"
-                        }}
-                      />
-                      <DatepickerController
-                        name={`contractorPayment.${index}.datePayment`}
-                        labelProps={{
-                          label: "Date Paiment"
-                        }}
-                      />
-                    </div>
-                    <div
-                      className="flex justify-end"
-                    >
-                      <Button
-                        label="Delete"
-                        color="red"
-                        onClick={() => removePayment(index)}
-                      />
-                    </div>
-                  </Card>
-                ))}
-                <div
-                  className="flex justify-start"
-                >
-                  <Button
-                    label="Add Payment"
-                    color="blue"
-                    onClick={() => appendPayment({
-                      amountHT: "",
-                      amountTTC: "",
-                      datePayment: {
-                        startDate: "",
-                        endDate: ""
-                      },
-                      contractorPaymentCondition: []
-                    })}
-                  />
-                </div>
-              </section>
+              <Tabs
+                tabs={tabs.map((tab, index) => ({label: tab.name, id: index}))}
+                currentTab={tab}
+                onClickTab={setTab}            
+              />
+              <div
+                className="my-4 w-full"
+              >
+                {tabs[tab].component}
+              </div>
             </main>
             <footer
               className="border-t-2 border-t-gray-4300 py-4 px-8 flex justify-end sticky bottom-0 bg-white"
@@ -250,7 +161,7 @@ export function SidepanelAddContractor({
             </footer>
           </div>
         </FormProvider>
-      </form>
+      </div>
     </Sidebar>
   )
 }
