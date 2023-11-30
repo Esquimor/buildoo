@@ -75,6 +75,77 @@ export class ContractorsRouter {
           });
         }
       }),
+      edit: this.trpc.authentificatedProcedure
+        .input(
+          z.object({
+            id: z.string(),
+            name: z.string().min(1),
+            type: z.string().min(1),
+          }),
+        )
+        .mutation(async ({ input, ctx }) => {
+
+          const { user } = ctx;
+
+          try {
+            const contractor = await this.contractorsService
+              .getContractorByIdAndOrganizationId(input.id, user.organizationId);
+
+            if (!contractor) {
+              throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: "NO_PROJECT_FOUND",
+              });
+            }
+
+            contractor.name = input.name;
+            contractor.type = input.type as ContractorType;
+
+            const contractorSaved = await this.contractorsService.editContractor(contractor);
+            return contractorSaved
+          } catch (error) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: (error as Error).message,
+            });
+          }
+        }),
+      addPayment: this.trpc.authentificatedProcedure
+        .input(
+          z.object({
+            contractorId: z.string(),
+            amountHT: z.number(),
+            amountTTC: z.number(),
+            datePayment: z.string(),
+            contractorPaymentCondition: z.array(z.object({
+              condition: z.string()
+            })).optional()
+          }))
+        .mutation(async ({ ctx, input }) => {
+          const { user } = ctx;
+
+          const contractor = await this.contractorsService
+            .getContractorByIdAndOrganizationId(input.contractorId, user.organizationId);
+
+          if (!contractor) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Not_Found",
+            });
+          }
+          
+          const contractorPayment = new ContractorPayment();
+
+          contractorPayment.amount_ht = input.amountHT;
+          contractorPayment.amount_ttc = input.amountTTC;
+          contractorPayment.date_payment = input.datePayment;
+          contractorPayment.contractorId = contractor.id;
+
+          const contractorPaymentSaved = await this.contractorsService
+            .createAContractorPayment(contractorPayment);
+
+          return contractorPaymentSaved;
+        }),  
       editPayment: this.trpc.authentificatedProcedure
         .input(z.object({
           id: z.string(),

@@ -5,16 +5,20 @@ import DataGrid, { RenderCellProps, RenderEditCellProps, RowsChangeData } from '
 import dayjs from 'dayjs';
 import "./sidepanelContractorPayment.style.css"
 import { ContractorPaymentStatus, ContractorPaymentStatusData } from '@shared-type';
-import { Badge } from '@shared-ui';
+import { Badge, Button, Label } from '@shared-ui';
 import { trpc } from 'apps/web/app/trpc';
 import { Menu } from './menu/menu';
+import { useState } from 'react';
+import { ModalAddPayment } from './modalAddPayment';
 
 interface SidepanelContractorPayments {
   payments: ContractorPayment[]
+  contractorId: string;
 }
 
 export function SidepanelContractorPayments({
-  payments
+  payments,
+  contractorId,
 }: SidepanelContractorPayments) {
 
   const deletePayment = trpc.contractor.deletePayment.useMutation();
@@ -46,7 +50,7 @@ export function SidepanelContractorPayments({
           </div>
         );
       },
-      renderEditCell({ row, column, onRowChange, onClose}: RenderEditCellProps<ContractorPayment>) {
+      renderEditCell({ row, onRowChange }: RenderEditCellProps<ContractorPayment>) {
         return (
           <input type="date" value={row.date_payment} className="text-sm w-full" 
           onChange={(e) => onRowChange({ ...row, date_payment: e.target.value })}
@@ -57,6 +61,9 @@ export function SidepanelContractorPayments({
     {
       key: 'amount_ht',
       name: 'Somme HT',
+      renderCell({ row }: RenderCellProps<ContractorPayment>) {
+        return row.amount_ht?.toLocaleString()
+      },
       renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPayment>) {
         return (
           <input
@@ -71,6 +78,9 @@ export function SidepanelContractorPayments({
     {
       key: 'amount_ttc',
       name: 'Somme TTC',
+      renderCell({ row }: RenderCellProps<ContractorPayment>) {
+        return row.amount_ttc?.toLocaleString()
+      },
       renderEditCell({ row, onRowChange}: RenderEditCellProps<ContractorPayment>) {
         return (
           <input
@@ -130,10 +140,25 @@ export function SidepanelContractorPayments({
     }
   ];
 
+  const [openAddPayment, setOpenAddPayment] = useState(false);
+
   return (
     <div
-      id="sidepanelContractorPayment"
+      className="flex flex-col"
     >
+      <div
+        className="flex justify-between items-center mb-4"
+      >
+        <Label
+          label={`Payment (${payments.length})`}
+          size="text-lg"
+          weight="font-bold"
+        />
+        <Button
+          label="Create"
+          onClick={() => setOpenAddPayment(true)}
+        />
+      </div>
       <DataGrid
         columns={columns}
         rows={payments}
@@ -142,6 +167,11 @@ export function SidepanelContractorPayments({
         }}
         rowHeight={40}
         onRowsChange={onRowsChange}
+      />
+      <ModalAddPayment
+        open={openAddPayment}
+        onClose={() => setOpenAddPayment(false)}
+        contractorId={contractorId}
       />
     </div>
   )

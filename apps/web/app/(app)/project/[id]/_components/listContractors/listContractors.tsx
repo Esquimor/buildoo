@@ -58,7 +58,7 @@ export function ListContractors({
         </div>
         <DataGrid
           columns={columns}
-          rows={contractors}
+          rows={[...contractors].sort((a, b) => a.name.localeCompare(b.name))}
           style={{
             maxHeight: "100%"
           }}

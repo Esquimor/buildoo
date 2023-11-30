@@ -2,6 +2,7 @@ import { Label, Sidebar, Tabs } from "@shared-ui";
 import useParamsQuery from "../../../../_hooks/useParamsQuery";
 import { Contractor } from "@server/contractors/contractors.entity";
 import { SidepanelContractorPayments } from "./sidepanelContractorPayments";
+import { SidepanelContractorGeneral } from "./sidepanelContractorGeneral";
 
 interface SidepanelContractorProps {
   open: boolean;
@@ -29,15 +30,18 @@ export function SidepanelContractor({
       id: "general",
       name: "Général",
       component: (
-        <div>
-          Général
-        </div>
+        <SidepanelContractorGeneral
+          contractor={contractor}
+        />
       )
     },
     {
       id: "payment",
       name: "Payment",
-      component: <SidepanelContractorPayments payments={contractor.contractorPayments} />
+      component: <SidepanelContractorPayments
+          payments={contractor.contractorPayments}
+          contractorId={contractor.id}
+        />
     }
   ]
 

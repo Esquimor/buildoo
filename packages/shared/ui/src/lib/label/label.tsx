@@ -16,7 +16,9 @@ export interface LabelProps {
         "text-9xl";
     color?: "text-gray-700" |
         "text-red-700" |
-        "text-white";
+        "text-white" |
+        "text-blue-700" |
+        "text-blue-900";
     weight?: "font-thin" |
         "font-extralight" |
         "font-light" |
@@ -36,7 +38,7 @@ export function Label({
   weight = "font-medium",
 }: LabelProps) {
 
-    let className= `${classNameProps} ${size} ${color} ${weight}`
+  const className= `${classNameProps} ${size} ${color} ${weight}`
 
   return (
     <p

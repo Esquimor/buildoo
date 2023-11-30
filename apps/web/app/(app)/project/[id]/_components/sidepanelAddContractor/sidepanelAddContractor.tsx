@@ -12,7 +12,6 @@ import { FileUploadController } from "apps/web/app/_components/form/fileUploadCo
 type FormValues = {
   name: string;
   type: string;
-  juridicalStatus: string;
   decennial_civil_liability: File;
   contractorPayment: {
     amountHT: string;

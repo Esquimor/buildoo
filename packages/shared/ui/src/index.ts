@@ -13,3 +13,5 @@ export * from "./lib/modal/modal";
 export * from "./lib/iconButton/iconButton";
 export * from "./lib/list/list";
 export * from "./lib/listItem/listItem";
+export * from "./lib/info/info";
+export * from "./lib/modalForm/modalForm";

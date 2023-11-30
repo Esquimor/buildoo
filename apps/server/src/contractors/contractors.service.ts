@@ -19,6 +19,23 @@ export class ContractorsService {
     return contractorSaved
   }
 
+  async editContractor(contractor: Contractor) {
+    const contractorSaved = await this.contractorsRepository.save(contractor)
+    return contractorSaved
+  }
+
+  async getContractorByIdAndOrganizationId(contractorId: string, organizationId: string) {
+    const contractor = await this.contractorsRepository.findOne({
+      where: {
+        id: contractorId,
+        project: {
+          organizationId: organizationId
+        }
+      }
+    })
+    return contractor
+  }
+
   async getContractorPaymentByIdAndOrganizationId(paymentId: string, organizationId: string) {
     const contractorPayment = await this.contractorPaymentRepository.findOne({
       where: {
@@ -31,6 +48,11 @@ export class ContractorsService {
       },
     })
     return contractorPayment;
+  }
+
+  async createAContractorPayment(contractorPayment: ContractorPayment) {
+    const paymentSaved = await this.contractorPaymentRepository.save(contractorPayment);
+    return paymentSaved;
   }
 
   async updatePayment(contractorPayment: ContractorPayment) {

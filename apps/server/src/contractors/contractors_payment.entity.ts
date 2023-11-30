@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Contractor } from './contractors.entity';
 import { ContractorPaymentCondition } from './contractors_payment_condition.entity';
 import { ContractorPaymentStatus } from '@shared-type';
@@ -25,7 +25,11 @@ export class ContractorPayment {
   status: ContractorPaymentStatus;
 
   @ManyToOne(() => Contractor, contractor => contractor.contractorPayments)
+  @JoinColumn({ name: "contractorId" })
   contractor: Contractor;
+
+  @Column({ nullable: true })
+  contractorId: string;
 
   @OneToMany(() => ContractorPaymentCondition, contractorPaymentCondition => contractorPaymentCondition.contractorPayment)
   contractorPaymentConditions: ContractorPaymentCondition[]
