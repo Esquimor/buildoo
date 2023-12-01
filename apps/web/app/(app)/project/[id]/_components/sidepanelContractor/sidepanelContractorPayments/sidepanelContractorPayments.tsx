@@ -1,7 +1,7 @@
 "use client";
 
 import { ContractorPayment } from '@server/contractors/contractors_payment.entity';
-import DataGrid, { ColSpanArgs, Column, RenderCellProps, RenderEditCellProps, RowsChangeData } from 'react-data-grid';
+import DataGrid, { Column, RenderCellProps, RenderEditCellProps, RowsChangeData } from 'react-data-grid';
 import dayjs from 'dayjs';
 import "./sidepanelContractorPayment.style.css"
 import { ContractorPaymentStatus, ContractorPaymentStatusData } from '@shared-type';
@@ -11,6 +11,8 @@ import { Menu } from './menu/menu';
 import { useMemo, useState } from 'react';
 import { ModalAddPayment } from './modalAddPayment';
 import { CellExpanderFormatter } from 'apps/web/app/_components/datagrid/cellExpanderFormatter';
+import { ContractorPaymentCondition } from '@server/contractors/contractors_payment_condition.entity';
+import { AccordionConditions } from './accordionConditions';
 
 interface Master extends ContractorPayment {
   type: "MASTER";
@@ -21,6 +23,7 @@ interface Detail {
   type: "DETAIL";
   id: string;
   parentId: string;
+  conditions: ContractorPaymentCondition[];
 }
 
 type ContractorPaymentRow =
@@ -61,8 +64,9 @@ export function SidepanelContractorPayments({
         if (findRowChanged.expanded) {
           rows.splice(indexes[0] + 1, 0, {
             type: 'DETAIL',
-            id: findRowChanged.id + 100,
-            parentId: findRowChanged.id
+            id: `${findRowChanged.id}-conditions`,
+            parentId: findRowChanged.id,
+            conditions: findRowChanged.contractorPaymentConditions,
           });
         } else {
           rows.splice(indexes[0] + 1, 1);
@@ -72,6 +76,18 @@ export function SidepanelContractorPayments({
         updatePayment.mutate(findRowChanged);
       }
     }
+  }
+
+  const updateCondition =  trpc.contractor.editCondition.useMutation();
+
+  const handleConditionChange = (
+    values: {
+      condition?: string;
+      completed?: boolean;
+    },
+    idCondtion: string | number
+  ) => {
+    updateCondition.mutate({id: `${idCondtion}`, ...values})
   }
 
   const columns = useMemo((): readonly Column<ContractorPaymentRow>[] => [
@@ -87,17 +103,20 @@ export function SidepanelContractorPayments({
       renderCell({ row, tabIndex, onRowChange }) {
         if (row.type === 'DETAIL') {
           return (
-            <Accordion
-              items={[
-                {
-                  id: "1",
-                  title: "Foo",
-                  children: <div>
-                    Bar
-                  </div>
-                }
-              ]}
-            />
+            <div
+              className="h-full w-full p-2"
+            >
+              <AccordionConditions
+                items={row.conditions.map(condition => ({
+                  id: condition.id,
+                  title: condition.condition.slice(0, 20),
+                  children: condition.condition,
+                  checked: condition.completed
+                }))}
+                className="rounded-xl bg-white h-min"
+                onChange={handleConditionChange}
+              />
+            </div>
           );
         }
 
@@ -129,8 +148,11 @@ export function SidepanelContractorPayments({
       renderEditCell({ row, onRowChange }: RenderEditCellProps<ContractorPaymentRow>) {
         if (row.type === "DETAIL") return null;
         return (
-          <input type="date" value={row.date_payment} className="text-sm w-full" 
-          onChange={(e) => onRowChange({ ...row, date_payment: e.target.value })}
+          <input
+            type="date"
+            value={row.date_payment}
+            className="text-sm w-full h-full px-2" 
+            onChange={(e) => onRowChange({ ...row, date_payment: e.target.value })}
           />
         );
       },
@@ -149,7 +171,7 @@ export function SidepanelContractorPayments({
           <input
             type="number"
             value={row.amount_ht}
-            className="text-sm w-full"
+            className="text-sm w-full h-full px-2"
             onChange={(e) => onRowChange({ ...row, amount_ht: e.target.valueAsNumber })}
           />
         )
@@ -168,7 +190,7 @@ export function SidepanelContractorPayments({
           <input
             type="number"
             value={row.amount_ttc}
-            className="text-sm w-full"
+            className="text-sm w-full h-full px-2"
             onChange={(e) => onRowChange({ ...row, amount_ttc: e.target.valueAsNumber })}
           />
         )
@@ -247,7 +269,8 @@ export function SidepanelContractorPayments({
       <DataGrid
         columns={columns}
         rows={rows}
-        rowHeight={(row) => (row.type === 'DETAIL' ? 300 : 45)}
+        // @ts-ignore: rendering error if a number is put
+        rowHeight={(row) => (row.type === 'DETAIL' ? undefined : 40)}
         style={{
           maxHeight: "100%"
         }}

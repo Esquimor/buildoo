@@ -6,14 +6,10 @@ const sharedTailwindConfig = require('../../tailwind-preset/tailwind.config');
 module.exports = {
   presets: [sharedTailwindConfig],
   content: [
-    "./node_modules/flowbite-react/**/*.js",
     join(
       __dirname,
       '{src,pages,components,app}/**/*!(*.stories|*.spec).{ts,tsx,html}'
     ),
     ...createGlobPatternsForDependencies(__dirname),
-  ],
-  plugins: [
-    require("flowbite/plugin")
   ],
 };

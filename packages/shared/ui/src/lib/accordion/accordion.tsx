@@ -29,22 +29,25 @@ export function Accordion({
       className={classNameProps}
     >
       {items.map(item => (
-        <div key={item.id}>
-          <h2>
-            <button
-              type="button"
-              className="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
-              onClick={() => handleClick(item.id)}
-            >
-              <span>{item.title}</span>
-              {item.id === open ? '\u25BC' : '\u25B6'}
-            </button>
-          </h2>
-          <div
-            className="hidden"
+        <div
+          key={item.id}
+          className="flex flex-col first:rounded-t-xl last:rounded-b-xl"
+        >
+          <button 
+            type="button"
+            className="cursor-pointer flex items-center justify-between h-10 w-full p-2 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={() => handleClick(item.id)}
           >
-            {item.children}
-          </div>
+            <div>{item.title}</div>
+            <div>{item.id === open ? '\u25BC' : '\u25B6'}</div>
+          </button>
+          {open === item.id && (
+            <div
+              className="h-fit"
+            >
+              {item.children}
+            </div>
+          )}
         </div>
       ))}
     </div>

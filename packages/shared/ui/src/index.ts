@@ -16,3 +16,5 @@ export * from "./lib/listItem/listItem";
 export * from "./lib/info/info";
 export * from "./lib/modalForm/modalForm";
 export * from "./lib/accordion/accordion";
+export * from "./lib/checkbox/checkbox";
+export * from "./lib/textarea/textarea";

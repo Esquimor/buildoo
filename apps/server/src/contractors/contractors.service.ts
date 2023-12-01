@@ -3,6 +3,7 @@ import { Contractor } from './contractors.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ContractorPayment } from './contractors_payment.entity';
+import { ContractorPaymentCondition } from './contractors_payment_condition.entity';
 
 @Injectable()
 export class ContractorsService {
@@ -11,7 +12,9 @@ export class ContractorsService {
     @InjectRepository(Contractor)
     private contractorsRepository: Repository<Contractor>,
     @InjectRepository(ContractorPayment)
-    private contractorPaymentRepository: Repository<ContractorPayment>
+    private contractorPaymentRepository: Repository<ContractorPayment>,
+    @InjectRepository(ContractorPaymentCondition)
+    private contractorPaymentConditionRepository: Repository<ContractorPaymentCondition>
   ) {}
 
   async createAContractor(contractor: Contractor) {
@@ -62,5 +65,26 @@ export class ContractorsService {
 
   async deletePayment(contractorPaymentId: string) {
     return await this.contractorPaymentRepository.delete(contractorPaymentId);
+  }
+
+  async getContractorPaymentConditionByIdAndOrganizationId(conditionId: string, organizationId: string) {
+    const contractorPaymentCondition = await this.contractorPaymentConditionRepository.findOne({
+      where: {
+        id: conditionId,
+        contractorPayment: {
+          contractor: {
+            project: {
+              organizationId: organizationId
+            }
+          }
+        }
+      },
+    })
+    return contractorPaymentCondition;
+  }
+
+  async updateCondition(contractorPaymentCondition: ContractorPaymentCondition) {
+    const conditionSaved = await this.contractorPaymentConditionRepository.save(contractorPaymentCondition);
+    return conditionSaved;
   }
 }

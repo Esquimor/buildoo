@@ -3,7 +3,7 @@ import { Modal } from './modal';
 
 const meta: Meta<typeof Modal> = {
   component: Modal,
-  title: 'sidebar',
+  title: 'modal',
 };
 export default meta;
 

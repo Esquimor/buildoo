@@ -8,5 +8,18 @@ const meta: Meta<typeof Accordion> = {
 export default meta;
 
 export const Default = {
-  args: {},
+  args: {
+    items: [
+      {
+        id: "foo",
+        title: "Foo",
+        children: <div>FOo</div>
+      },
+      {
+        id: "bar",
+        title: "Bar",
+        children: <div>Bar</div>
+      }
+    ]
+  },
 };
