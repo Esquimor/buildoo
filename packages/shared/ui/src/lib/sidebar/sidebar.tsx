@@ -21,8 +21,15 @@ export function Sidebar({
 
   return (
     <>
-    <div
-        className="justify-end items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none w-full h-full"
+      <div
+        className="opacity-10 fixed inset-0 z-40 bg-black"
+        style={{
+          width: `calc(100% - ${width})`
+        }}
+      />
+      <div
+        className="justify-end items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none w-full h-full"
+        onClick={onClickOutside}
       >
         <div
           className="relative flex justify-end h-full"
@@ -32,18 +39,12 @@ export function Sidebar({
             style={{
               width
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {children}
           </div>
         </div>
       </div>
-      <div
-        className="opacity-10 fixed inset-0 z-50 bg-black"
-        onClick={onClickOutside}
-        style={{
-          width: `calc(100% - ${width})`
-        }}
-      />
     </>
   );
 }

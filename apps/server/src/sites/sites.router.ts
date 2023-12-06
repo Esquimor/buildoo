@@ -1,27 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { TrpcService } from '../app/trpc/trpc.service';
 import { TRPCError } from '@trpc/server';
+import { SitesService } from './sites.service';
 import { z } from 'zod';
-import { ContractorsService } from './contractors.service';
-import { Contractor } from './contractors.entity';
-import { ContractorType } from '@shared-type';
+import { Site } from './sites.entity';
 
 @Injectable()
-export class ContractorsRouter {
+export class SitesRouter {
   constructor(
-    private readonly contractorsService: ContractorsService,
-    private readonly trpc: TrpcService
+    private readonly trpc: TrpcService,
+    private readonly sitesService: SitesService,
   ) {}
 
-  contractorRouter = this.trpc.router({
+  sitesRouter = this.trpc.router({
     get: this.trpc.authentificatedProcedure
       .query(async ({ ctx }) =>  {
         try {
           const { user } = ctx;
 
-          const getContractors = await this.contractorsService.getAllContractorByOrganizationId(user.organizationId)
+          const getSitesFromOrganization = await this.sitesService.getAllByOrganizationId(user.organizationId)
 
-          return getContractors;
+          return getSitesFromOrganization;
+
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
@@ -32,24 +32,22 @@ export class ContractorsRouter {
     create: this.trpc.authentificatedProcedure
       .input(z.object({
         name: z.string(),
-        type: z.string(),
       }))
       .mutation(async ({ ctx, input }) =>  {
         try {
           const { user } = ctx;
           const {
-            name,
-            type
-          } = input
+            name
+          } = input;
 
-          const contractor = new Contractor();
-          contractor.name = name;
-          contractor.type = type as ContractorType;
-          contractor.organizationId = user.organizationId
+          const site = new Site();
+          site.name = name;
+          site.organizationId = user.organizationId;
 
-          const contractorSaved = await this.contractorsService.createContractor(contractor)
+          const siteCreated = await this.sitesService.createSite(site)
 
-          return contractorSaved;
+          return siteCreated;
+
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
@@ -61,35 +59,32 @@ export class ContractorsRouter {
       .input(z.object({
         id: z.string(),
         name: z.string().optional(),
-        type: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) =>  {
         try {
           const { user } = ctx;
           const {
             id,
-            name,
-            type
-          } = input
+            name
+          } = input;
 
-          const getContractor = await this.contractorsService.getContractorById(id);
+          const getSite = await this.sitesService.getSiteById(id);
 
-          if (getContractor.organizationId !== user.organizationId) {
+          if (getSite.organizationId !== user.organizationId) {
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
-              message: "error",
+              message: "",
             });
           }
 
-          if (name)
-            getContractor.name = name;
+          if (!!name) {
+            getSite.name = name
+          }
 
-          if (type)
-            getContractor.type = type as ContractorType;
+          const siteEdited = await this.sitesService.editSite(getSite)
 
-          const contractorEdited = await this.contractorsService.editContractor(getContractor)
+          return siteEdited;
 
-          return contractorEdited;
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
@@ -100,26 +95,28 @@ export class ContractorsRouter {
     delete: this.trpc.authentificatedProcedure
       .input(z.object({
         id: z.string(),
+        name: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) =>  {
         try {
           const { user } = ctx;
           const {
             id,
-          } = input
+          } = input;
 
-          const getContractor = await this.contractorsService.getContractorById(id);
+          const getSite = await this.sitesService.getSiteById(id);
 
-          if (getContractor.organizationId !== user.organizationId) {
+          if (getSite.organizationId !== user.organizationId) {
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
-              message: "error",
+              message: "",
             });
           }
 
-          const contractorDeleted = await this.contractorsService.deleteContractorById(id)
+          const siteDeleted = await this.sitesService.deleteSiteById(id)
 
-          return contractorDeleted;
+          return siteDeleted;
+
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
@@ -130,4 +127,4 @@ export class ContractorsRouter {
   });
 }
 
-export type ContractorsRouterType = ContractorsRouter[`contractorRouter`];
+export type SitesRouterType = SitesRouter[`sitesRouter`];

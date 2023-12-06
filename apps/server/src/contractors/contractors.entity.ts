@@ -1,7 +1,7 @@
-import { Project } from '@server/projects/projects.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { ContractorPayment } from './contractors_payment.entity';
-import { ContractorType, ContractorWorkStatus } from "@shared-type"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { ContractorType } from "@shared-type"
+import { Organization } from '@server/organization/organization.entity';
+import { Intervention } from '@server/interventions/interventions.entity';
 
 @Entity()
 export class Contractor {
@@ -18,33 +18,16 @@ export class Contractor {
   })
   type: ContractorType;
 
-  @Column()
-  decennial_civil_liability: string;
+  @ManyToOne(() => Organization, organization => organization.contractors)
+  @JoinColumn({ name: "organizationId" })
+  organization: Organization;
 
-  @Column({
-    type: "enum",
-    enum: ContractorWorkStatus,
-    default: ContractorWorkStatus.Unknow
-  })
-  work_status: ContractorWorkStatus;
+  @Column({ nullable: true })
+  organizationId: string;
 
-  @ManyToOne(() => Project, project => project.contractors)
-  project: Project;
+  @OneToMany(() => Intervention, intervention => intervention.contractor)
+  interventions: Intervention[];
 
-  @OneToMany(() => ContractorPayment, contractorPayment => contractorPayment.contractor, {
-    cascade: true
-  })
-  contractorPayments: ContractorPayment[];
-
-  addContractorPayment(contractorPayment: ContractorPayment) {
-    if (!this.contractorPayments || this.contractorPayments.length === 0) {
-        this.contractorPayments = [contractorPayment]
-        return; 
-    }
-    this.contractorPayments = [...this.contractorPayments, contractorPayment]
-  }
-
-  resetContractorPayments() {
-    this.contractorPayments = [];
-  }
+  @OneToMany(() => Intervention, intervention => intervention.contractor_master)
+  intervention_masters: Intervention[];
 }

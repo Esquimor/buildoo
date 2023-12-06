@@ -5,9 +5,13 @@ import { AppRouter } from './app.router';
 import { UsersModule } from '@server/users/users.module';
 import { AuthModule } from '@server/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { ProjectsModule } from '@server/projects/projects.module';
 import { OrganizationModule } from '@server/organization/organization.module';
 import { ContractorsModule } from '@server/contractors/contractors.module';
+import { InterventionPaymentConditionsModule } from '@server/intervention_payment_conditions/intervention_payment_conditions.module';
+import { InterventionPaymentsModule } from '@server/intervention_payments/intervention_payments.module';
+import { InterventionsModule } from '@server/interventions/interventions.module';
+import { SitesModule } from '@server/sites/sites.module';
+import { WorksModule } from '@server/works/works.module';
 
 @Module({
   imports: [
@@ -27,8 +31,12 @@ import { ContractorsModule } from '@server/contractors/contractors.module';
     OrganizationModule,
     UsersModule,
     AuthModule,
-    ProjectsModule,
     ContractorsModule,
+    InterventionPaymentConditionsModule,
+    InterventionPaymentsModule,
+    InterventionsModule,
+    SitesModule,
+    WorksModule,
   ],
   controllers: [],
   providers: [AppRouter],

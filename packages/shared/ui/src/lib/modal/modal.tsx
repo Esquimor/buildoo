@@ -36,7 +36,7 @@ export function Modal({
           }}
         >
           <div
-            className="z-60 shadow-lg relative flex flex-col outline-none focus:outline-none"
+            className="z-[60] shadow-lg relative flex flex-col outline-none focus:outline-none"
             style={{
               width
             }}

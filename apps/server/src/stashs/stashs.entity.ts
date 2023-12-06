@@ -1,5 +1,4 @@
-import { Project } from '@server/projects/projects.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Stash {
@@ -7,8 +6,8 @@ export class Stash {
   id: string;
 
   @Column()
-  name: string;
+  description: string;
 
-  @ManyToMany(() => Project, project => project.stashs)
-  project: Project;
+  @Column()
+  completed: boolean;
 }
