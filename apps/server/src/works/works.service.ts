@@ -66,7 +66,14 @@ export class WorksService {
     }
 
     return await this.contractorsRepository.find({
-      where: where as FindOptionsWhere<Work>
+      where: where as FindOptionsWhere<Work>,
+      relations: [
+        "interventions",
+        "interventions.intervention_payments",
+        "interventions.intervention_payments",
+        "interventions.intervention_payments.intervention_payment_conditions",
+        "interventions.contractor"
+      ]
     })
   }
 

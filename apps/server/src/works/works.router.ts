@@ -25,7 +25,7 @@ export class WorksRouter {
     get: this.trpc.authentificatedProcedure
       .input(z.object({
         ids: z.array(z.string()).optional(),
-        site_ids: z.array(z.string()).optional()
+        site_ids: z.array(z.string()).optional(),
       }))
       .query(async ({ ctx, input }) =>  {
         try {

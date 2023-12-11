@@ -3,16 +3,20 @@ import { Label } from "@shared-ui";
 export interface WorkProps {
   id: string;
   name: string;
+  className?: string;
 }
 
 export function Work({
   id,
-  name
+  name,
+  className: classNameProps = "",
 }: WorkProps) {
+
+  const className = `${classNameProps} flex justify-between bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full`
 
   return (
     <div
-      className="flex justify-between bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full"
+      className={className}
     >
       <Label
         label={name}

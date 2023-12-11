@@ -28,7 +28,9 @@ export function Works({
           label="Add a work"
         />
       </div>
-      <div>
+      <div
+        className="mt-4"
+      >
         {works.length === 0 ? (
             <div
               className="flex justify-center pt-2"
@@ -43,6 +45,7 @@ export function Works({
                 key={work.id}
                 id={work.id}
                 name={work.name}
+                className="mb-2"
               />
             ))
           )
