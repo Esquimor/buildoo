@@ -17,7 +17,7 @@ export type FormValues = {
   contractorPayment: {
     amountHT: string;
     amountTTC: string;
-    datePayment: {
+    payment_date: {
       startDate: string;
       endDate: string;
     };
@@ -46,7 +46,7 @@ export function SidepanelAddContractor({
     contractorPayment: z.array(z.object({
       amountHT: z.string(),
       amountTTC: z.string(),
-      datePayment: z.object({
+      payment_date: z.object({
         startDate: z.string(),
         endDate: z.string(),
       }),

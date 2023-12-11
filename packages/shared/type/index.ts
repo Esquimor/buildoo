@@ -59,3 +59,8 @@ export const ContractorPaymentStatusData = {
     color: "red"
   },
 }
+
+export enum WorkType {
+  Create = "create",
+  Renovation = "renovation"
+}

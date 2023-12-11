@@ -37,7 +37,7 @@ export function Payment() {
               }}
             />
             <DatepickerController
-              name={`contractorPayment.${index}.datePayment`}
+              name={`contractorPayment.${index}.payment_date`}
               labelProps={{
                 label: "Date Paiment"
               }}
@@ -66,7 +66,7 @@ export function Payment() {
           onClick={() => appendPayment({
             amountHT: "",
             amountTTC: "",
-            datePayment: {
+            payment_date: {
               startDate: "",
               endDate: ""
             },

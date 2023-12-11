@@ -2,7 +2,7 @@ import { Label, LabelProps } from "../label/label";
 
 export interface InfoProps {
   label?: string;
-  value?: string;
+  value?: string | null;
   labelProps?: Omit<LabelProps,  "label">;
   valueProps?: Omit<LabelProps, "label">;
   className?: string;

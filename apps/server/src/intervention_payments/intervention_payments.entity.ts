@@ -7,8 +7,14 @@ export class InterventionPayment {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
-  name: string;
+  @Column({ type: "date", nullable: true })
+  payment_date: Date;
+
+  @Column({ nullable: true })
+  amount_ht: number;
+
+  @Column({ nullable: true })
+  amount_ttc: number;
 
   @ManyToOne(() => Intervention, intervention => intervention.intervention_payments)
   @JoinColumn({ name: "interventionId" })
@@ -17,6 +23,12 @@ export class InterventionPayment {
   @Column({ nullable: true })
   interventionId: string;
 
-  @OneToMany(() => InterventionPaymentCondition, intervention_payment_condition => intervention_payment_condition.intervention_payment)
+  @OneToMany(
+    () => InterventionPaymentCondition,
+    intervention_payment_condition => intervention_payment_condition.intervention_payment,
+    {
+      cascade: true
+    }
+  )
   intervention_payment_conditions: InterventionPaymentCondition[];
 }

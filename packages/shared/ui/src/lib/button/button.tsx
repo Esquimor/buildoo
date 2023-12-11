@@ -6,7 +6,8 @@ export interface ButtonProps {
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   type?: "button" | "submit";
-  size?: "xs" | "sm" | "md"
+  size?: "xs" | "sm" | "md";
+  disabled?: boolean;
 }
 
 export function Button({
@@ -16,6 +17,7 @@ export function Button({
   className: classNameProps,
   type="button",
   size="md",
+  disabled = false,
 }: ButtonProps) {
 
   let className = `${classNameProps} font-bold rounded focus:outline-none focus:shadow-outline`;
@@ -48,11 +50,16 @@ export function Button({
       break;
   }
 
+  if (disabled) {
+    className = `${className} cursor-not-allowed`
+  }
+
   return (
     <button
       className={className}
       type={type}
       onClick={onClick}
+      disabled={disabled}
     >
       {label}
     </button>

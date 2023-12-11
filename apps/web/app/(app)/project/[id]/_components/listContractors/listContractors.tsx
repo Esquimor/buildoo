@@ -3,7 +3,7 @@ import { Button, Label } from "@shared-ui";
 import { useState } from "react";
 import DataGrid, { CellClickArgs } from 'react-data-grid';
 import { SidepanelAddContractor } from "../sidepanelAddContractor";
-import useParamsQuery from "../../../../_hooks/useParamsQuery";
+import useParamsQuery from "../../../../../../_hooks/useParamsQuery";
 import { SidepanelContractor } from "../sidepanelContractor";
 
 interface ListContractorsProps {

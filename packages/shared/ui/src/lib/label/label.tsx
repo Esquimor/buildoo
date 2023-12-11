@@ -1,6 +1,6 @@
 export interface LabelProps {
     className?: string;
-    label?: string;
+    label?: string | null;
     size?: "text-xs" |
         "text-sm" |
         "text-base" |

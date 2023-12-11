@@ -21,6 +21,7 @@
       "@shared-lang": ["./packages/shared/lang/index.ts"],
       "@server/*": ["./apps/server/src/*"],
       "@shared-type": ["./packages/shared/type/index.ts"],
+      "@shared-utils": ["./packages/shared/utils/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

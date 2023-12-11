@@ -3,7 +3,7 @@
 import { Card, Label, Tabs } from "@shared-ui";
 import { trpc } from "apps/web/app/trpc";
 import { ListContractors } from "./_components/listContractors";
-import useParamsQuery from "../../_hooks/useParamsQuery";
+import useParamsQuery from "../../../../_hooks/useParamsQuery";
 
 interface ProjectProps {
   params: {

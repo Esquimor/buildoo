@@ -11,6 +11,12 @@ export class Intervention {
   @Column()
   name: string;
 
+  @Column({ type: "date", nullable: true })
+  start_date: Date;
+
+  @Column({ type: "date", nullable: true })
+  end_date: Date;
+
   @ManyToOne(() => Work, work => work.interventions)
   @JoinColumn({ name: "workId" })
   work: Work;
@@ -18,7 +24,13 @@ export class Intervention {
   @Column({ nullable: true })
   workId: string;
 
-  @ManyToOne(() => Contractor, contractor => contractor.interventions)
+  @ManyToOne(
+    () => Contractor, 
+    contractor => contractor.interventions,
+    {
+      cascade: true
+    }
+  )
   @JoinColumn({ name: "contractorId" })
   contractor: Contractor;
 
@@ -32,6 +44,12 @@ export class Intervention {
   @Column({ nullable: true })
   contractorMasterId: string;
 
-  @OneToMany(() => InterventionPayment, intervention_payment => intervention_payment.intervention)
+  @OneToMany(
+    () => InterventionPayment,
+    intervention_payment => intervention_payment.intervention,
+    {
+      cascade: true,
+    }
+  )
   intervention_payments: InterventionPayment[];
 }

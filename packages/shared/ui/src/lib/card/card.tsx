@@ -1,15 +1,17 @@
-import { ReactNode } from "react"
+import { ReactNode, MouseEvent } from "react"
 
 interface CardProps {
   children: ReactNode;
   className?: string;
   padding?: "xs" | "sm" | "md";
+  onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
 export function Card({
   children,
   className: classNameProps = "",
-  padding = "md"
+  padding = "md",
+  onClick
 }: CardProps) {
 
   let className = `${classNameProps} flex justify-between bg-white shadow-md rounded`;
@@ -29,6 +31,7 @@ export function Card({
   return (
     <div
       className={className}
+      onClick={onClick}
     >
       {children}
     </div>

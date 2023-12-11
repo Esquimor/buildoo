@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 export const publicRoutes = ["/login", "/register"];
 
 export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === "/") {
+    return NextResponse.redirect(new URL("/home", request.url));
+  }
+  
   const currentUser = request.cookies.get("currentUser")?.value;
 
   if (publicRoutes.includes(request.nextUrl.pathname)) {

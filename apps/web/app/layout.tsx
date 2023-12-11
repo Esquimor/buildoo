@@ -21,9 +21,7 @@ function RootLayout({
             <div className="grow min-h-screen">
               {/* @ts-ignore */}
               <RootTrpc>
-                <div>
-                  {children}
-                </div>
+                {children}
               </RootTrpc>
             </div>
             <footer className="grid grid-cols-4 gap-4 bg-gray-700 text-white p-8">

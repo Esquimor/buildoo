@@ -32,10 +32,12 @@ export class WorksService {
     idOrganization: string,
     options: {
       siteIds?: string[];
+      ids?: string[];
     }
   ) {
 
     let where: {
+      id?: FindOperator<string>
       site: {
         organizationId: string;
         id?: FindOperator<string>
@@ -45,6 +47,13 @@ export class WorksService {
         organizationId: idOrganization,
       }
     };
+
+    if (!!options.ids) {
+      where = {
+        ...where,
+        id: In(options.ids)
+      }
+    }
 
     if (!!options.siteIds) {
       where = {

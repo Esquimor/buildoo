@@ -22,14 +22,12 @@ export class InterventionPaymentsRouter {
     create: this.trpc.authentificatedProcedure
       .input(z.object({
         intervention_id: z.string(),
-        name: z.string(),
       }))
       .mutation(async ({ ctx, input }) =>  {
         try {
           const { user } = ctx;
           const {
             intervention_id,
-            name
           } = input;
 
           const getIntervention = await this.interventionsService
@@ -43,7 +41,6 @@ export class InterventionPaymentsRouter {
           }
 
           const interventionPayment = new InterventionPayment();
-          interventionPayment.name = name;
           interventionPayment.interventionId = intervention_id;
 
           const interventionPaymentSaved = await this.interventionPaymentsService
@@ -67,7 +64,6 @@ export class InterventionPaymentsRouter {
           const { user } = ctx;
           const {
             id,
-            name
           } = input;
 
           const getInterventionPayment = await this.interventionPaymentsService
@@ -78,10 +74,6 @@ export class InterventionPaymentsRouter {
               code: "INTERNAL_SERVER_ERROR",
               message: "",
             });
-          }
-
-          if (!!name) {
-            getInterventionPayment.name = name
           }
 
           const interventionPaymentEdited = await this.interventionPaymentsService

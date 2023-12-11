@@ -15,11 +15,15 @@ export class ContractorsRouter {
 
   contractorRouter = this.trpc.router({
     get: this.trpc.authentificatedProcedure
-      .query(async ({ ctx }) =>  {
+      .input(z.object({
+        ids: z.array(z.string()).optional(),
+      }).optional())
+      .query(async ({ ctx, input }) =>  {
         try {
           const { user } = ctx;
 
-          const getContractors = await this.contractorsService.getAllContractorByOrganizationId(user.organizationId)
+          const getContractors = await this.contractorsService
+            .getAllContractorByOrganizationId(user.organizationId, input)
 
           return getContractors;
         } catch (error) {

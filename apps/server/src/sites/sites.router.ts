@@ -14,11 +14,20 @@ export class SitesRouter {
 
   sitesRouter = this.trpc.router({
     get: this.trpc.authentificatedProcedure
-      .query(async ({ ctx }) =>  {
+      .input(z.object({
+        ids: z.array(z.string()).optional()
+      }).optional())
+      .query(async ({ ctx, input }) =>  {
         try {
           const { user } = ctx;
 
-          const getSitesFromOrganization = await this.sitesService.getAllByOrganizationId(user.organizationId)
+          const getSitesFromOrganization = await this.sitesService
+            .getAllByOrganizationId(
+              user.organizationId,
+              {
+                ids: input?.ids ?? null
+              }
+            )
 
           return getSitesFromOrganization;
 
@@ -47,7 +56,6 @@ export class SitesRouter {
           const siteCreated = await this.sitesService.createSite(site)
 
           return siteCreated;
-
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",

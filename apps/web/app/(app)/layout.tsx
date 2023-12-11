@@ -1,21 +1,21 @@
 import { Header } from "./_components/header/header";
 
 export default function AppLayout({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) {
+  children,
+}: {
+  children: React.ReactNode;
+}) {
 
-    return (
-        <div
-            className="flex flex-col"
-        >
-            <Header />
-            <main
-                className="grow"
-            >
-                {children}
-            </main>
-        </div>
-    )
+  return (
+    <div
+      className="flex flex-col min-h-screen"
+    >
+      <Header />
+      <main
+        className="grow bg-zinc-100 pt-8"
+      >
+          {children}
+      </main>
+    </div>
+  )
 }

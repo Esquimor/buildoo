@@ -1,5 +1,5 @@
 import { Label, Sidebar, Tabs } from "@shared-ui";
-import useParamsQuery from "../../../../_hooks/useParamsQuery";
+import useParamsQuery from "../../../../../../_hooks/useParamsQuery";
 import { Contractor } from "@server/contractors/contractors.entity";
 import { SidepanelContractorPayments } from "./sidepanelContractorPayments";
 import { SidepanelContractorGeneral } from "./sidepanelContractorGeneral";
