@@ -1,6 +1,5 @@
 import { INestApplication, Injectable } from '@nestjs/common';
-import { z } from 'zod';
-import { TrpcService, createTRPCContext } from './trpc/trpc.service';
+import { TrpcService } from './trpc/trpc.service';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { UsersRouter } from '@server/users/users.router';
 import { AuthRouter } from '@server/auth/auth.router';
@@ -10,6 +9,7 @@ import { InterventionPaymentsRouter } from '@server/intervention_payments/interv
 import { InterventionsRouter } from '@server/interventions/interventions.router';
 import { SitesRouter } from '@server/sites/sites.router';
 import { WorksRouter } from '@server/works/works.router';
+import { createTRPCContext } from './trpc/trpc.context';
 
 @Injectable()
 export class AppRouter {
