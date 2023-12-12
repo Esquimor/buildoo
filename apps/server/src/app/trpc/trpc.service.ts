@@ -1,24 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { AuthService } from '@server/auth/auth.service';
-import { User } from '@server/users/user.entity';
 import { UsersService } from '@server/users/users.service';
 import { TRPCError, initTRPC } from '@trpc/server';
-import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
-
-interface CreateInnerContextOptions extends CreateExpressContextOptions {
-  user: User | null;
-}
-
-export const createTRPCContext = (_opts: CreateInnerContextOptions) => {
-  const { req, res, user } = _opts;
-  return {
-    req,
-    res,
-    user
-  }
-}
-
-export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
+import { Context } from './trpc.context';
 
 @Injectable()
 export class TrpcService {
@@ -33,6 +17,15 @@ export class TrpcService {
   router = this.trpc.router;
   mergeRouters = this.trpc.mergeRouters;
 
+
+  /**
+   * I didn't find any way to correctly put a middleware in an other function and use it.
+   * 
+   * The type are check incorrectly.
+   * So I will let that here.
+   * 
+   * And hope Trpc had a better way to handle it in the futur.
+   */
   isAuthentificated = this.trpc.middleware(async ({ ctx, next }) => {
     const { req } = ctx;
 
