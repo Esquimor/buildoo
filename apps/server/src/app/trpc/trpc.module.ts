@@ -12,6 +12,7 @@ import { UsersModule } from '@server/users/users.module';
   controllers: [],
   providers: [
     TrpcService,
+    
   ],
   exports: [TrpcService]
 })
