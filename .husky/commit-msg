@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+message="$(cat $1)"
+requiredPattern="^Buildoo-[0-9]+ (docs|feature|fix|refactor|revert|style|test|merge|label|config|component): .*$"
+if ! [[ $message =~ $requiredPattern ]];
+then
+  echo "
+		🚨 Wrong commit message! 😕
+		The commit message must have this format: 
+		Buildoo-<ISSUE_ID> (docs|feature|fix|refactor|revert|style|test|merge|label|config|component) 
+		Example: Buildoo-1234 feature: new feature 
+		Your commit message was 
+		$message 
+		For more information, check script in .husky/commit-msg 
+    "
+  exit 1
+fi
