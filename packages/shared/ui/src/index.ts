@@ -23,3 +23,4 @@ export * from "./lib/spinnerScreen/spinnerScreen";
 export * from "./lib/radio/radio";
 export * from "./lib/stepper/stepper";
 export * from "./lib/collapse/collapse";
+export * from "./lib/tabsVertical/tabsVertical";

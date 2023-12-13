@@ -17,7 +17,7 @@ export function TabVertical({
   if (selected) {
     className = `${className} text-white bg-blue-700 active w-full dark:bg-blue-600`
   } else {
-    className = `${className} hover:text-gray-900 bg-gray-50 hover:bg-gray-100 w-full dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white`
+    className = `${className} hover:text-gray-900 bg-gray-200 hover:bg-gray-300 w-full dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white`
   }
 
 

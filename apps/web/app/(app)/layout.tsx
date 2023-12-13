@@ -12,7 +12,7 @@ export default function AppLayout({
     >
       <Header />
       <main
-        className="grow bg-zinc-100 pt-8"
+        className="grow bg-zinc-100 py-8"
       >
           {children}
       </main>
