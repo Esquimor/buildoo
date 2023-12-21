@@ -17,6 +17,7 @@ import { WorksModule } from '@server/works/works.module';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
+      //todo:put in .env file
       type: 'postgres',
       host: 'localhost',
       port: 5432,
